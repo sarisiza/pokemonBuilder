@@ -7,32 +7,12 @@ query Items($language: Int, $version: Int = 20) {
             pokemon_v2_itemcategorynames(where: {language_id: {_eq: $language}}) {
                 name
             }
-        }
-        pokemon_v2_itemflavortexts(where: {_and: {language_id: {_eq: $language}, pokemon_v2_versiongroup: {id: {_gte: $version}}}}) {
-            flavor_text
-        }
-    }
-}
-
-query ItemById($language: Int, $version: Int = 20, $id: Int) {
-    pokemon_v2_item(where: {id: {_eq: $id}}) {
-        id
-        name
-        pokemon_v2_itemcategory {
-            id
-            pokemon_v2_itemcategorynames(where: {language_id: {_eq: $language}}) {
-                name
+            pokemon_v2_itempocket {
+                id
             }
         }
         pokemon_v2_itemflavortexts(where: {_and: {language_id: {_eq: $language}, pokemon_v2_versiongroup: {id: {_gte: $version}}}}) {
             flavor_text
         }
-    }
-}
-
-query PokeBall{
-    pokemon_v2_item(where: {pokemon_v2_itemcategory: {item_pocket_id: {_eq: 3}}}) {
-        id
-        name
     }
 }

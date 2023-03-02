@@ -26,7 +26,9 @@ class NetworkModule {
 
     @Provides
     @Singleton
-    fun providesApolloClient(okHttpClient: OkHttpClient) =
+    fun providesApolloClient(
+        okHttpClient: OkHttpClient
+    ): ApolloClient =
         ApolloClient.Builder()
             .okHttpClient(okHttpClient)
             .serverUrl(BASE_URL)
@@ -39,7 +41,7 @@ class NetworkModule {
         cacheInterceptor: CacheInterceptor,
         forceCacheInterceptor: ForceCacheInterceptor,
         httpLoggingInterceptor: HttpLoggingInterceptor
-    ) =
+    ): OkHttpClient =
         OkHttpClient.Builder()
             .addInterceptor(httpLoggingInterceptor)
             .addInterceptor(cacheInterceptor)
@@ -54,11 +56,11 @@ class NetworkModule {
     @Singleton
     fun providesForceCacheInterceptor(
         networkState: NetworkState
-    ) = ForceCacheInterceptor(networkState)
+    ): ForceCacheInterceptor = ForceCacheInterceptor(networkState)
 
     @Provides
     @Singleton
-    fun providesHttpLoggingInterceptor() =
+    fun providesHttpLoggingInterceptor(): HttpLoggingInterceptor =
         HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
         }
@@ -67,16 +69,16 @@ class NetworkModule {
     @Singleton
     fun providesNetworkState(
         connectivityManager: ConnectivityManager
-    ) = NetworkState(connectivityManager)
+    ): NetworkState = NetworkState(connectivityManager)
 
     @Provides
     @Singleton
-    fun providesCacheInterceptor() = CacheInterceptor()
+    fun providesCacheInterceptor(): CacheInterceptor = CacheInterceptor()
 
     @Provides
     @Singleton
     fun providesCacheFile(
         @ApplicationContext context: Context
-    ) = Cache(File(context.cacheDir,"http-cache"),10L*1024L*1024L)
+    ): Cache = Cache(File(context.cacheDir,"http-cache"),10L*1024L*1024L)
 
 }
