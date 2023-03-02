@@ -3,9 +3,9 @@ query Items($language: Int, $version: Int = 20) {
         id
         name
         pokemon_v2_itemcategory {
+            id
             pokemon_v2_itemcategorynames(where: {language_id: {_eq: $language}}) {
                 name
-                item_category_id
             }
         }
         pokemon_v2_itemflavortexts(where: {_and: {language_id: {_eq: $language}, pokemon_v2_versiongroup: {id: {_gte: $version}}}}) {
@@ -19,9 +19,9 @@ query ItemById($language: Int, $version: Int = 20, $id: Int) {
         id
         name
         pokemon_v2_itemcategory {
+            id
             pokemon_v2_itemcategorynames(where: {language_id: {_eq: $language}}) {
                 name
-                item_category_id
             }
         }
         pokemon_v2_itemflavortexts(where: {_and: {language_id: {_eq: $language}, pokemon_v2_versiongroup: {id: {_gte: $version}}}}) {
