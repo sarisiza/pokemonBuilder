@@ -47,67 +47,6 @@ query Moves($language: Int, $move_list: [Int!], $version: Int = 20) {
             id
             pokemon_v2_moveeffecteffecttexts(where: {language_id: {_eq: $language}}) {
                 effect
-                id
-                language_id
-            }
-        }
-        pokemon_v2_movenames(where: {language_id: {_eq: $language}}) {
-            name
-        }
-    }
-}
-
-query MovesById($language: Int, $move: Int, $version: Int = 20) {
-    pokemon_v2_move(where: {id: {_eq: $move}}) {
-        id
-        accuracy
-        move_effect_chance
-        power
-        pp
-        priority
-        pokemon_v2_type {
-            id
-            pokemon_v2_typenames(where: {language_id: {_eq: $language}}) {
-                name
-            }
-        }
-        pokemon_v2_movemeta {
-            ailment_chance
-            crit_rate
-            drain
-            flinch_chance
-            healing
-            max_hits
-            max_turns
-            min_hits
-            min_turns
-            stat_chance
-            id
-        }
-        pokemon_v2_movetarget {
-            id
-            pokemon_v2_movetargetnames(where: {language_id: {_eq: $language}}) {
-                name
-            }
-        }
-        pokemon_v2_movedamageclass {
-            id
-            pokemon_v2_movedamageclassnames(where: {language_id: {_eq: $language}}) {
-                name
-            }
-        }
-        pokemon_v2_moveflavortexts(where: {_and: {language_id: {_eq: $language}, pokemon_v2_versiongroup: {id: {_gte: $version}}}}) {
-            flavor_text
-            version_group_id
-            id
-            language_id
-        }
-        pokemon_v2_moveeffect {
-            id
-            pokemon_v2_moveeffecteffecttexts(where: {language_id: {_eq: $language}}) {
-                effect
-                id
-                language_id
             }
         }
         pokemon_v2_movenames(where: {language_id: {_eq: $language}}) {
