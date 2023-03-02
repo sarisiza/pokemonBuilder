@@ -50,6 +50,9 @@ android {
 
 dependencies {
 
+    //custom libraries
+    implementation project(':network_connection')
+
     implementation 'androidx.core:core-ktx:1.9.0'
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.1'
     implementation 'androidx.activity:activity-compose:1.6.1'
@@ -64,7 +67,6 @@ dependencies {
     implementation "com.apollographql.apollo3:apollo-runtime:3.7.4"
 
     //okhttp
-    implementation 'com.squareup.okhttp3:okhttp:4.10.0'
     implementation "com.squareup.okhttp3:logging-interceptor:4.10.0"
 
     // lifecycle
