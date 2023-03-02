@@ -3,6 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
+    id 'com.apollographql.apollo3'
 }
 
 android {
@@ -45,6 +46,12 @@ android {
         resources {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
         }
+    }
+}
+
+apollo {
+    service("service") {
+        packageName.set("com.pokemon.pokemonbuilder")
     }
 }
 

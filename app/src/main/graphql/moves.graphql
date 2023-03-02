@@ -1,5 +1,5 @@
-query Moves($language: Int, $move_list: [Int!], $version: Int = 20) {
-    pokemon_v2_move(where: {id: {_in: $move_list}}) {
+query Moves($language: Int, $version: Int = 20) {
+    pokemon_v2_move {
         id
         accuracy
         move_effect_chance

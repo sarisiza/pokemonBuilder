@@ -17,6 +17,7 @@ class ApplicationModule {
     @Singleton
     fun providesConnectivityManager(
         @ApplicationContext context: Context
-    ) = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    ): ConnectivityManager =
+        context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
 }
