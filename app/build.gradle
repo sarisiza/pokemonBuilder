@@ -90,11 +90,18 @@ dependencies {
     kapt("androidx.room:room-compiler:2.5.0")
     implementation("androidx.room:room-ktx:2.5.0")
 
+    //gson
+    implementation 'com.google.code.gson:gson:2.10.1'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+
     // LiveData
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.5.1'
 
     //mockk
     testImplementation "io.mockk:mockk:1.13.4"
+
+    //DataStore
+    implementation "androidx.datastore:datastore-preferences:1.1.0-alpha01"
 
     // unit testing coroutines
     testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4'
