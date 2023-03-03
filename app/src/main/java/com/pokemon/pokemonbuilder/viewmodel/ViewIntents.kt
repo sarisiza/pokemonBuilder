@@ -2,12 +2,13 @@ package com.pokemon.pokemonbuilder.viewmodel
 
 import com.pokemon.pokemonbuilder.entities.PokemonDb
 import com.pokemon.pokemonbuilder.entities.PokemonTeamDb
+import com.pokemon.pokemonbuilder.utils.Language
 
 sealed class ViewIntents{
 
     object SIGN_UP: ViewIntents()
 
-    object PICK_LANGUAGE: ViewIntents()
+    data class PICK_LANGUAGE(val language: Language): ViewIntents()
 
     data class GET_POKEMON(val generation: Int): ViewIntents()
 

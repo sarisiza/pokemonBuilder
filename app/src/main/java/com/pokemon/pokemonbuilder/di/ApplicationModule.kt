@@ -2,6 +2,12 @@ package com.pokemon.pokemonbuilder.di
 
 import android.content.Context
 import android.net.ConnectivityManager
+import androidx.datastore.core.DataStore
+import androidx.datastore.core.handlers.ReplaceFileCorruptionHandler
+import androidx.datastore.preferences.core.PreferenceDataStoreFactory
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.emptyPreferences
+import androidx.datastore.preferences.preferencesDataStoreFile
 import com.custom_libs_spil.network_connection.utils.NetworkState
 import com.pokemon.pokemonbuilder.service.NetworkRepository
 import com.pokemon.pokemonbuilder.usecases.DexUseCases
@@ -13,6 +19,9 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import javax.inject.Singleton
 
 @Module
@@ -28,14 +37,15 @@ class ApplicationModule {
 
     @Provides
     @Singleton
-    fun providesDexUseCases(
-        networkRepository: NetworkRepository,
-        networkState: NetworkState
-    ): DexUseCases =
-        DexUseCases(
-            GetPokemonListUseCase(networkRepository,networkState),
-            GetMovesListUseCase(networkRepository,networkState),
-            GetItemsListUseCase(networkRepository,networkState)
+    fun providesDataStore(
+        @ApplicationContext context: Context
+    ): DataStore<Preferences> =
+        PreferenceDataStoreFactory.create(
+            corruptionHandler = ReplaceFileCorruptionHandler(
+                produceNewData = { emptyPreferences() }
+            ),
+            scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
+            produceFile = {context.preferencesDataStoreFile("POKEMON_DATA_STORE")}
         )
 
 }
