@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.ConnectivityManager
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.network.okHttpClient
+import com.custom_libs_spil.network_connection.services.ServiceCall
 import com.custom_libs_spil.network_connection.utils.CacheInterceptor
 import com.custom_libs_spil.network_connection.utils.ForceCacheInterceptor
 import com.custom_libs_spil.network_connection.utils.NetworkState
@@ -80,5 +81,12 @@ class NetworkModule {
     fun providesCacheFile(
         @ApplicationContext context: Context
     ): Cache = Cache(File(context.cacheDir,"http-cache"),10L*1024L*1024L)
+
+    @Provides
+    @Singleton
+    fun providesServiceCall(
+        networkState: NetworkState
+    ): ServiceCall =
+        ServiceCall(networkState)
 
 }
