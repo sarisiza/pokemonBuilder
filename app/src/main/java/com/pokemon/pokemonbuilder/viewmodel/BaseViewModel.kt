@@ -11,9 +11,10 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.plus
+import javax.inject.Inject
 
 private const val TAG = "BaseViewModel"
-@HiltViewModel
+
 open class BaseViewModel: ViewModel() {
 
     protected var appLanguage: LanguageEnum = LanguageEnum.ENG
