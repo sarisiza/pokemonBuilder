@@ -1,8 +1,8 @@
-package com.pokemon.pokemonbuilder.domain
+package com.pokemon.pokemonbuilder.entities
 
 import com.pokemon.pokemonbuilder.PokemonQuery
 
-data class Pokemon(
+data class PokemonDb(
     val id: Int,
     val name: String,
     val abilities: List<PokemonQuery.Pokemon_v2_ability>,
