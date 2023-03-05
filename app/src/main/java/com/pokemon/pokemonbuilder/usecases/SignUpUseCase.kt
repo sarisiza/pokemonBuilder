@@ -5,6 +5,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
+import com.pokemon.pokemonbuilder.utils.User
 import javax.inject.Inject
 
 class SignUpUseCase @Inject constructor(
@@ -14,8 +15,7 @@ class SignUpUseCase @Inject constructor(
     suspend operator fun invoke(
         firstName: String,
         lastName: String,
-        birthDay: String
-    ){
+    ): User {
         var loggedIn = false
         dataStore.data.collect{
             loggedIn = it[booleanPreferencesKey("LOGGED_IN")] ?: false
@@ -27,6 +27,7 @@ class SignUpUseCase @Inject constructor(
                 it[booleanPreferencesKey("LOGGED_IN")] = true
             }
         }
+        return User(firstName,lastName)
     }
 
 }
