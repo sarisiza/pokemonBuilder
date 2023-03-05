@@ -5,6 +5,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
+import com.pokemon.pokemonbuilder.utils.Language
 import com.pokemon.pokemonbuilder.utils.LanguageEnum
 import javax.inject.Inject
 
@@ -14,11 +15,12 @@ class PickLanguageUseCase @Inject constructor(
 
     suspend operator fun invoke(
         language: LanguageEnum
-    ){
+    ): LanguageEnum{
         dataStore.edit {
             it[intPreferencesKey("LANGUAGE")] = language.language.id
             it[booleanPreferencesKey("LANGUAGE_PICKED")] = true
         }
+        return language
     }
 
 }

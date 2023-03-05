@@ -2,6 +2,7 @@ package com.pokemon.pokemonbuilder.di
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import com.custom_libs_spil.network_connection.services.ServiceCall
 import com.custom_libs_spil.network_connection.utils.NetworkState
 import com.pokemon.pokemonbuilder.service.NetworkRepository
 import com.pokemon.pokemonbuilder.usecases.*
@@ -19,12 +20,12 @@ class UseCaseModule {
     @Singleton
     fun providesDexUseCases(
         networkRepository: NetworkRepository,
-        networkState: NetworkState
+        serviceCall: ServiceCall
     ): DexUseCases =
         DexUseCases(
-            GetPokemonListUseCase(networkRepository,networkState),
-            GetMovesListUseCase(networkRepository,networkState),
-            GetItemsListUseCase(networkRepository,networkState)
+            GetPokemonListUseCase(networkRepository,serviceCall),
+            GetMovesListUseCase(networkRepository,serviceCall),
+            GetItemsListUseCase(networkRepository,serviceCall)
         )
 
     @Provides
@@ -36,7 +37,8 @@ class UseCaseModule {
             SignUpUseCase(dataStore),
             PickLanguageUseCase(dataStore),
             GetLoginInfoUseCase(dataStore),
-            GetLanguageUseCase(dataStore)
+            GetLanguageUseCase(dataStore),
+            CheckIfFirstTimeUseCase(dataStore)
         )
 
 }
