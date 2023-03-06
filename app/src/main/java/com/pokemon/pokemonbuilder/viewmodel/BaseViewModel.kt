@@ -1,6 +1,9 @@
 package com.pokemon.pokemonbuilder.viewmodel
 
 import android.util.Log
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pokemon.pokemonbuilder.BuildConfig
@@ -19,11 +22,11 @@ private const val TAG = "BaseViewModel"
 
 open class BaseViewModel: ViewModel() {
 
-    protected val _appLanguage: MutableStateFlow<LanguageEnum> = MutableStateFlow(LanguageEnum.ENG)
-    val appLanguage: StateFlow<LanguageEnum> get() = _appLanguage
+    protected val mAppLanguage: MutableState<LanguageEnum> = mutableStateOf(LanguageEnum.ENG)
+    val appLanguage: State<LanguageEnum> get() = mAppLanguage
 
-    protected val _loggedUser: MutableStateFlow<User> = MutableStateFlow(User("",""))
-    val loggedUser: StateFlow<User> get() = _loggedUser
+    protected val mLoggedUser: MutableState<User> = mutableStateOf(User("",""))
+    val loggedUser: State<User> get() = mLoggedUser
 
     protected val safeViewModelScope by lazy {
         viewModelScope + Dispatchers.IO + SupervisorJob() + CoroutineExceptionHandler{ _, e->
