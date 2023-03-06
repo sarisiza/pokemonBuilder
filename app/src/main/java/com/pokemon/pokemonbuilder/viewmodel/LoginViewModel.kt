@@ -1,5 +1,9 @@
 package com.pokemon.pokemonbuilder.viewmodel
 
+import android.util.Log
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import com.pokemon.pokemonbuilder.usecases.LoginUseCases
 import com.pokemon.pokemonbuilder.utils.LanguageEnum
 import com.pokemon.pokemonbuilder.utils.User
@@ -9,16 +13,17 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+private const val TAG = "LoginViewModel"
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val loginUseCases: LoginUseCases
 ): BaseViewModel() {
 
-    private val _firstTimeLanguage: MutableStateFlow<Boolean> = MutableStateFlow(false)
-    val fistTimeLanguage: StateFlow<Boolean> get() = _firstTimeLanguage
+    private val _firstTimeLanguage: MutableState<Boolean?> = mutableStateOf(false)
+    val fistTimeLanguage: State<Boolean?> get() = _firstTimeLanguage
 
-    private val _firstTimeUser: MutableStateFlow<Boolean> = MutableStateFlow(false)
-    val firstTimeUser: StateFlow<Boolean> get() = _firstTimeUser
+    private val _firstTimeUser: MutableState<Boolean?> = mutableStateOf(false)
+    val firstTimeUser: State<Boolean?> get() = _firstTimeUser
 
     fun getIntent(intents: ViewIntents){
         when(intents){
@@ -47,9 +52,9 @@ class LoginViewModel @Inject constructor(
     private fun getLanguage(language: LanguageEnum? = null){
         safeViewModelScope.launch {
             if(language == null){
-                _appLanguage.value = loginUseCases.getLanguageUseCase()
+                mAppLanguage.value = loginUseCases.getLanguageUseCase()
             } else{
-                _appLanguage.value = loginUseCases.languageUseCase(language)
+                mAppLanguage.value = loginUseCases.languageUseCase(language)
             }
         }
     }
@@ -57,9 +62,9 @@ class LoginViewModel @Inject constructor(
     private fun signUp(user: User? = null){
         safeViewModelScope.launch {
             if(user == null){
-                _loggedUser.value = loginUseCases.getLoginInfoUseCase()
+                mLoggedUser.value = loginUseCases.getLoginInfoUseCase()
             } else{
-                _loggedUser.value = loginUseCases.signUpUseCase(user.firstName,user.lastName)
+                mLoggedUser.value = loginUseCases.signUpUseCase(user.firstName,user.lastName)
             }
         }
     }
@@ -67,12 +72,14 @@ class LoginViewModel @Inject constructor(
     private fun checkFirstTimeLanguage(){
         safeViewModelScope.launch {
             _firstTimeLanguage.value = loginUseCases.checkIfLanguageUseCase()
+            Log.d(TAG, "checkFirstTimeLanguage: ${_firstTimeLanguage.value}")
         }
     }
 
     private fun checkFirstTimeUser(){
         safeViewModelScope.launch {
             _firstTimeUser.value = loginUseCases.checkIfUserUseCase()
+            Log.d(TAG, "checkFirstTimeUser: ${_firstTimeUser.value}")
         }
     }
 

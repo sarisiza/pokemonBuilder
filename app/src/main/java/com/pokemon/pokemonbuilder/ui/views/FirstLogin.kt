@@ -1,5 +1,6 @@
 package com.pokemon.pokemonbuilder.ui.views
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -24,26 +25,11 @@ import com.pokemon.pokemonbuilder.utils.User
 import com.pokemon.pokemonbuilder.viewmodel.LoginViewModel
 import com.pokemon.pokemonbuilder.viewmodel.ViewIntents
 
-@Composable
-fun FirstLogin(loginViewModel: LoginViewModel, navController: NavController) {
-    loginViewModel.getIntent(ViewIntents.CHECK_FIRST_TIME_LANGUAGE)
-    val isFirstLanguage = loginViewModel.fistTimeLanguage.collectAsState()
-    loginViewModel.getIntent(ViewIntents.CHECK_FIRST_TIME_USER)
-    val isFirstUser = loginViewModel.firstTimeUser.collectAsState()
-    if(!isFirstLanguage.value){
-        navController.navigate("pickLanguage")
-    } else{
-        if(!isFirstUser.value){
-            navController.navigate("signUp")
-        } else{
-            //todo go to main activity
-        }
-    }
-}
+private const val TAG = "FirstLogin"
 
 @Composable
-fun LanguagePicker(loginViewModel: LoginViewModel, navController: NavController) {
-    val isFirstUser = loginViewModel.firstTimeUser.collectAsState()
+fun LanguagePicker(loginViewModel: LoginViewModel, navController: NavController, mainPage: () -> Unit) {
+    val isFirstUser = loginViewModel.firstTimeUser
     var selectedLanguage by remember { mutableStateOf(LanguageEnum.ENG) }
     Column(
         modifier = Modifier
@@ -68,10 +54,13 @@ fun LanguagePicker(loginViewModel: LoginViewModel, navController: NavController)
         selectedLanguage = languageSpinner()
         Button(onClick = {
             loginViewModel.getIntent(ViewIntents.PICK_LANGUAGE(selectedLanguage))
-            if(!isFirstUser.value){
-                navController.navigate("signUp")
-            } else{
-                //todo go to main activity
+            isFirstUser.value?.let {
+                if(!it){
+                    Log.d(TAG, "LanguagePicker: language picked")
+                    navController.navigate("signUp")
+                } else{
+                    mainPage.invoke()
+                }
             }
         }) {
             Text(text = stringResource(R.string.button_accept))
@@ -80,7 +69,7 @@ fun LanguagePicker(loginViewModel: LoginViewModel, navController: NavController)
 }
 
 @Composable
-fun SignUp(loginViewModel: LoginViewModel, navController: NavController) {
+fun SignUp(loginViewModel: LoginViewModel, mainPage: () -> Unit) {
     var firstName by remember { mutableStateOf("") }
     var lastName by remember { mutableStateOf("") }
     Column(
@@ -141,9 +130,10 @@ fun SignUp(loginViewModel: LoginViewModel, navController: NavController) {
             )
         }
         Button(onClick = {
+            Log.d(TAG, "SignUp: signing up")
             val user = User(firstName,lastName)
             loginViewModel.getIntent(ViewIntents.SIGN_UP(user))
-            //todo go to main activity
+            mainPage.invoke()
         }) {
             Text(text = stringResource(R.string.button_sign_up))
         }

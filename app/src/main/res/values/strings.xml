@@ -11,4 +11,5 @@
     <string name="login_last_name">Last Name</string>
     <string name="login_enter_last_name">Enter your Last Name</string>
     <string name="button_sign_up">Sign Up</string>
+    <string name="title_activity_main">MainActivity</string>
 </resources>
