@@ -18,7 +18,7 @@ class GetItemsListUseCase(
 
     operator fun invoke(
         language: LanguageEnum,
-        version: Int?
+        version: Int? = null
     ): Flow<UIState<List<ItemsQuery.Pokemon_v2_item>>> = flow{
         emit(UIState.LOADING)
         serviceCall.serviceCallApi.apolloServiceCall(

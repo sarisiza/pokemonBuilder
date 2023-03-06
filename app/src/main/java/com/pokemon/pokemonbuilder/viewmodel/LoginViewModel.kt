@@ -44,7 +44,7 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    fun getLanguage(language: LanguageEnum? = null){
+    private fun getLanguage(language: LanguageEnum? = null){
         safeViewModelScope.launch {
             if(language == null){
                 _appLanguage.value = loginUseCases.getLanguageUseCase()
@@ -54,7 +54,7 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    fun signUp(user: User? = null){
+    private fun signUp(user: User? = null){
         safeViewModelScope.launch {
             if(user == null){
                 _loggedUser.value = loginUseCases.getLoginInfoUseCase()
@@ -64,13 +64,13 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    fun checkFirstTimeLanguage(){
+    private fun checkFirstTimeLanguage(){
         safeViewModelScope.launch {
             _firstTimeLanguage.value = loginUseCases.checkIfLanguageUseCase()
         }
     }
 
-    fun checkFirstTimeUser(){
+    private fun checkFirstTimeUser(){
         safeViewModelScope.launch {
             _firstTimeUser.value = loginUseCases.checkIfUserUseCase()
         }
