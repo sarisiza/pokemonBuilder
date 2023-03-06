@@ -36,8 +36,6 @@ class LoginActivity : ComponentActivity() {
                 ) {
                     val loginViewModel = hiltViewModel<LoginViewModel>()
                     val navController = rememberNavController()
-                    val isFirstLanguage = loginViewModel.fistTimeLanguage
-                    val isFirstUser = loginViewModel.firstTimeUser
                     NavHost(
                         navController = navController,
                         startDestination = "firstLogin"
@@ -45,15 +43,12 @@ class LoginActivity : ComponentActivity() {
                         composable(route = "firstLogin"){
                             loginViewModel.getIntent(ViewIntents.CHECK_FIRST_TIME_LANGUAGE)
                             loginViewModel.getIntent(ViewIntents.CHECK_FIRST_TIME_USER)
-                            Log.d(TAG, "FirstLogin: 0 $isFirstLanguage")
-                            isFirstLanguage.value?.let {firstLanguage ->
-                                Log.d(TAG, "FirstLogin: 1 $isFirstLanguage")
+                            loginViewModel.fistTimeLanguage.value?.let {firstLanguage ->
                                 if(!firstLanguage){
                                     navController.navigate("pickLanguage")
                                 } else{
-                                    isFirstUser.value?.let {firstUser ->
+                                    loginViewModel.firstTimeUser.value?.let {firstUser ->
                                         if(!firstUser){
-                                            Log.d(TAG, "FirstLogin: $isFirstUser")
                                             navController.navigate("signUp")
                                         } else{
                                             Log.d(TAG, "FirstLogin: gets here")

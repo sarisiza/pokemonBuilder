@@ -12,4 +12,6 @@
     <string name="login_enter_last_name">Enter your Last Name</string>
     <string name="button_sign_up">Sign Up</string>
     <string name="title_activity_main">MainActivity</string>
+    <string name="label_generation">Generation</string>
+    <string name="label_pick_generation">Pick generation</string>
 </resources>

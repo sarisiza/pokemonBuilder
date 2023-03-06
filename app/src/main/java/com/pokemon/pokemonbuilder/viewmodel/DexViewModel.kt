@@ -33,6 +33,10 @@ class DexViewModel @Inject constructor(
             StateFlow<UIState<List<ItemsQuery.Pokemon_v2_item>>>
         get() = _itemsList
 
+    var selectedPokemon: PokemonQuery.Pokemon_v2_pokemon? = null
+    var selectedMoveInfo: MovesQuery.Pokemon_v2_move? = null
+    var selectedItemInfo: ItemsQuery.Pokemon_v2_item? = null
+
     fun getIntent(intent: ViewIntents){
         when(intent){
             is ViewIntents.GET_POKEMON -> {
