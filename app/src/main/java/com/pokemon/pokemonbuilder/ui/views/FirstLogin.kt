@@ -25,12 +25,12 @@ import com.pokemon.pokemonbuilder.viewmodel.LoginViewModel
 import com.pokemon.pokemonbuilder.viewmodel.ViewIntents
 
 @Composable
-fun FirstLogin(loginViewModel: LoginViewModel, navController: NavController, changeLanguage: Boolean = false) {
+fun FirstLogin(loginViewModel: LoginViewModel, navController: NavController) {
     loginViewModel.getIntent(ViewIntents.CHECK_FIRST_TIME_LANGUAGE)
     val isFirstLanguage = loginViewModel.fistTimeLanguage.collectAsState()
     loginViewModel.getIntent(ViewIntents.CHECK_FIRST_TIME_USER)
     val isFirstUser = loginViewModel.firstTimeUser.collectAsState()
-    if(!isFirstLanguage.value || changeLanguage){
+    if(!isFirstLanguage.value){
         navController.navigate("pickLanguage")
     } else{
         if(!isFirstUser.value){
