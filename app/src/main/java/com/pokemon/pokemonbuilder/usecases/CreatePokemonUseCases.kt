@@ -1,7 +1,5 @@
 package com.pokemon.pokemonbuilder.usecases
 
-data class DexUseCases(
-    val getPokemonList: GetPokemonListUseCase,
-    val getMovesList: GetMovesListUseCase,
+data class CreatePokemonUseCases(
     val getItemsList: GetItemsListUseCase
 ): PokemonUseCasesParent()

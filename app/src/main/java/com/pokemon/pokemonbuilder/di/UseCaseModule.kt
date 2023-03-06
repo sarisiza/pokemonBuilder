@@ -40,4 +40,13 @@ class UseCaseModule {
             CheckIfUserUseCase(dataStore)
         )
 
+    @Provides
+    fun providesCreatePokemonUseCases(
+        networkRepository: NetworkRepository,
+        serviceCall: ServiceCall
+    ): CreatePokemonUseCases =
+        CreatePokemonUseCases(
+            GetItemsListUseCase(networkRepository,serviceCall)
+        )
+
 }

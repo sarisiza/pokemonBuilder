@@ -19,7 +19,7 @@ class GetMovesListUseCase @Inject constructor(
 
     operator fun invoke(
         language: LanguageEnum,
-        version: Int?
+        version: Int? = null
     ): Flow<UIState<List<MovesQuery.Pokemon_v2_move>>> = flow{
         emit(UIState.LOADING)
         serviceCall.serviceCallApi.apolloServiceCall(
