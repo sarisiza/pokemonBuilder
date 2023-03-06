@@ -14,13 +14,16 @@ class LoginViewModel @Inject constructor(
     private val loginUseCases: LoginUseCases
 ): BaseViewModel() {
 
-    private val _firstTimeLogged: MutableStateFlow<Boolean> = MutableStateFlow(false)
-    val fistTimeLogged: StateFlow<Boolean> get() = _firstTimeLogged
+    private val _firstTimeLanguage: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val fistTimeLanguage: StateFlow<Boolean> get() = _firstTimeLanguage
+
+    private val _firstTimeUser: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val firstTimeUser: StateFlow<Boolean> get() = _firstTimeUser
 
     fun getIntent(intents: ViewIntents){
         when(intents){
-            ViewIntents.CHECK_FIRST_TIME -> {
-                checkFirstTime()
+            ViewIntents.CHECK_FIRST_TIME_LANGUAGE -> {
+                checkFirstTimeLanguage()
             }
             is ViewIntents.PICK_LANGUAGE -> {
                 getLanguage(intents.language)
@@ -33,6 +36,9 @@ class LoginViewModel @Inject constructor(
             }
             ViewIntents.GET_USER -> {
                 signUp()
+            }
+            ViewIntents.CHECK_FIRST_TIME_USER -> {
+                checkFirstTimeUser()
             }
             else -> {}
         }
@@ -58,9 +64,15 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    fun checkFirstTime(){
+    fun checkFirstTimeLanguage(){
         safeViewModelScope.launch {
-            _firstTimeLogged.value = loginUseCases.checkIfFirstTimeUseCase()
+            _firstTimeLanguage.value = loginUseCases.checkIfLanguageUseCase()
+        }
+    }
+
+    fun checkFirstTimeUser(){
+        safeViewModelScope.launch {
+            _firstTimeUser.value = loginUseCases.checkIfUserUseCase()
         }
     }
 

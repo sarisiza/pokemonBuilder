@@ -4,16 +4,16 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 
-class CheckIfFirstTimeUseCase(
+class CheckIfUserUseCase(
     private val dataStore: DataStore<Preferences>
 ) {
 
     suspend operator fun invoke(): Boolean{
-        var langPicked = false
+        var loggedIn = false
         dataStore.data.collect{
-            langPicked = it[booleanPreferencesKey("LANGUAGE_PICKED")]?:false
+            loggedIn = it[booleanPreferencesKey("LOGGED_IN")]?:false
         }
-        return langPicked
+        return loggedIn
     }
 
 }

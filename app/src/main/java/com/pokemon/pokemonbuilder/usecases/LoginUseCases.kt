@@ -5,5 +5,6 @@ data class LoginUseCases(
     val languageUseCase: PickLanguageUseCase,
     val getLoginInfoUseCase: GetLoginInfoUseCase,
     val getLanguageUseCase: GetLanguageUseCase,
-    val checkIfFirstTimeUseCase: CheckIfFirstTimeUseCase
+    val checkIfLanguageUseCase: CheckIfLanguageUseCase,
+    val checkIfUserUseCase: CheckIfUserUseCase
 )
