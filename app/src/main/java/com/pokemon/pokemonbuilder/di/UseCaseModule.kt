@@ -3,13 +3,13 @@ package com.pokemon.pokemonbuilder.di
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import com.custom_libs_spil.network_connection.services.ServiceCall
-import com.custom_libs_spil.network_connection.utils.NetworkState
 import com.pokemon.pokemonbuilder.service.NetworkRepository
 import com.pokemon.pokemonbuilder.usecases.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
+import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
 @Module
@@ -17,7 +17,6 @@ import javax.inject.Singleton
 class UseCaseModule {
 
     @Provides
-    @Singleton
     fun providesDexUseCases(
         networkRepository: NetworkRepository,
         serviceCall: ServiceCall
@@ -29,7 +28,6 @@ class UseCaseModule {
         )
 
     @Provides
-    @Singleton
     fun providesLoginUseCases(
         dataStore: DataStore<Preferences>
     ): LoginUseCases =
@@ -38,7 +36,8 @@ class UseCaseModule {
             PickLanguageUseCase(dataStore),
             GetLoginInfoUseCase(dataStore),
             GetLanguageUseCase(dataStore),
-            CheckIfFirstTimeUseCase(dataStore)
+            CheckIfLanguageUseCase(dataStore),
+            CheckIfUserUseCase(dataStore)
         )
 
 }

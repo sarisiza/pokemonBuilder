@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">PokemonBuilder</string>
+    <string name="login_welcome">Welcome!</string>
+    <string name="login_pick_language">Pick your language</string>
+    <string name="login_label_language">Language</string>
+    <string name="icon_pick_language">Pick language</string>
+    <string name="button_accept">ACCEPT</string>
+    <string name="login_sign_up">Please sign up!</string>
+    <string name="login_first_name">First Name</string>
+    <string name="login_enter_first_name">Enter Your First Name</string>
+    <string name="login_last_name">Last Name</string>
+    <string name="login_enter_last_name">Enter your Last Name</string>
+    <string name="button_sign_up">Sign Up</string>
 </resources>

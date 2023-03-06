@@ -15,7 +15,9 @@ sealed class ViewIntents{
 
     object GET_USER: ViewIntents()
 
-    object CHECK_FIRST_TIME: ViewIntents()
+    object CHECK_FIRST_TIME_LANGUAGE: ViewIntents()
+
+    object CHECK_FIRST_TIME_USER: ViewIntents()
 
     data class GET_POKEMON(val generation: Int): ViewIntents()
 
