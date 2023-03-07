@@ -4,7 +4,7 @@
     <string name="login_pick_language">Pick your language</string>
     <string name="login_label_language">Language</string>
     <string name="icon_pick_language">Pick language</string>
-    <string name="button_accept">ACCEPT</string>
+    <string name="button_accept">Accept</string>
     <string name="login_sign_up">Please sign up!</string>
     <string name="login_first_name">First Name</string>
     <string name="login_enter_first_name">Enter Your First Name</string>
@@ -14,4 +14,7 @@
     <string name="title_activity_main">MainActivity</string>
     <string name="label_generation">Generation</string>
     <string name="label_pick_generation">Pick generation</string>
+    <string name="bnb_pokedex">Pokedex</string>
+    <string name="bnb_itemdex">Items</string>
+    <string name="bnb_movedex">Moves</string>
 </resources>
