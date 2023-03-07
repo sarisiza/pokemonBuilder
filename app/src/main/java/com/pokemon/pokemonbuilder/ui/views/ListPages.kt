@@ -49,7 +49,6 @@ fun PokemonInfo(
     Column {
         pokemonFilter(){
             dexViewModel.getIntent(ViewIntents.GET_POKEMON(it))
-            Log.d(TAG, "PokemonInfo: $it")
         }
         when(val state = dexViewModel.pokemonList.collectAsState(UIState.LOADING).value){
             is UIState.ERROR -> {}
