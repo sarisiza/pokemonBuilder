@@ -22,18 +22,16 @@ private const val TAG = "BaseViewModel"
 
 open class BaseViewModel: ViewModel() {
 
-    protected val mAppLanguage: MutableState<LanguageEnum> = mutableStateOf(LanguageEnum.ENG)
-    val appLanguage: State<LanguageEnum> get() = mAppLanguage
-
-    protected val mLoggedUser: MutableState<User> = mutableStateOf(User("",""))
-    val loggedUser: State<User> get() = mLoggedUser
-
     protected val safeViewModelScope by lazy {
         viewModelScope + Dispatchers.IO + SupervisorJob() + CoroutineExceptionHandler{ _, e->
             if(BuildConfig.DEBUG){
                 Log.e(TAG, "Error in viewmodel scope: ${e.localizedMessage}", e)
             }
         }
+    }
+
+    companion object{
+
     }
 
 }

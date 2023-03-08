@@ -22,15 +22,15 @@ import androidx.navigation.NavController
 import com.pokemon.pokemonbuilder.R
 import com.pokemon.pokemonbuilder.utils.LanguageEnum
 import com.pokemon.pokemonbuilder.utils.User
-import com.pokemon.pokemonbuilder.viewmodel.LoginViewModel
+import com.pokemon.pokemonbuilder.viewmodel.DexViewModel
 import com.pokemon.pokemonbuilder.viewmodel.ViewIntents
 
 private const val TAG = "FirstLogin"
 
 @Composable
-fun LanguagePicker(loginViewModel: LoginViewModel, navController: NavController, mainPage: () -> Unit) {
+fun LanguagePicker(dexViewModel: DexViewModel, navController: NavController, mainPage: () -> Unit) {
     var selectedLanguage by remember { mutableStateOf(LanguageEnum.ENG) }
-    val isFirstUser = loginViewModel.firstTimeUser.collectAsState()
+    val isFirstUser = dexViewModel.firstTimeUser.collectAsState()
     Column(
         modifier = Modifier
             .fillMaxSize(),
@@ -53,7 +53,7 @@ fun LanguagePicker(loginViewModel: LoginViewModel, navController: NavController,
         )
         selectedLanguage = languageSpinner()
         Button(onClick = {
-            loginViewModel.getIntent(ViewIntents.PICK_LANGUAGE(selectedLanguage))
+            dexViewModel.getIntent(ViewIntents.PICK_LANGUAGE(selectedLanguage))
             isFirstUser.value?.let {
                 if(!it){
                     Log.d(TAG, "LanguagePicker: language picked")
@@ -69,7 +69,7 @@ fun LanguagePicker(loginViewModel: LoginViewModel, navController: NavController,
 }
 
 @Composable
-fun SignUp(loginViewModel: LoginViewModel, mainPage: () -> Unit) {
+fun SignUp(dexViewModel: DexViewModel, mainPage: () -> Unit) {
     var firstName by remember { mutableStateOf("") }
     var lastName by remember { mutableStateOf("") }
     Column(
@@ -132,7 +132,7 @@ fun SignUp(loginViewModel: LoginViewModel, mainPage: () -> Unit) {
         Button(onClick = {
             Log.d(TAG, "SignUp: signing up")
             val user = User(firstName,lastName)
-            loginViewModel.getIntent(ViewIntents.SIGN_UP(user))
+            dexViewModel.getIntent(ViewIntents.SIGN_UP(user))
             mainPage.invoke()
         }) {
             Text(text = stringResource(R.string.button_sign_up))
