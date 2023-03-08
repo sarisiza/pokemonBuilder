@@ -1,6 +1,5 @@
 package com.pokemon.pokemonbuilder.ui.views
 
-import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -18,7 +17,6 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -26,13 +24,9 @@ import androidx.compose.ui.unit.toSize
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import coil.size.Scale
-import com.pokemon.pokemonbuilder.ItemsQuery
-import com.pokemon.pokemonbuilder.MovesQuery
 import com.pokemon.pokemonbuilder.PokemonQuery
 import com.pokemon.pokemonbuilder.R
 import com.pokemon.pokemonbuilder.utils.GenerationEnum
-import com.pokemon.pokemonbuilder.utils.LanguageEnum
 import com.pokemon.pokemonbuilder.utils.POKEMON_IMAGE_URL
 import com.pokemon.pokemonbuilder.utils.UIState
 import com.pokemon.pokemonbuilder.viewmodel.DexViewModel
@@ -47,12 +41,14 @@ fun PokemonInfo(
     navController: NavController
 ) {
     Column {
-        pokemonFilter(){
+        PokemonFilter(){
             dexViewModel.getIntent(ViewIntents.GET_POKEMON(it))
         }
         when(val state = dexViewModel.pokemonList.collectAsState(UIState.LOADING).value){
             is UIState.ERROR -> {}
-            UIState.LOADING -> {}
+            UIState.LOADING -> {
+                CircularProgressIndicator()
+            }
             is UIState.SUCCESS -> {
                 PokemonList(
                     pokemonItems = state.response
@@ -98,6 +94,7 @@ fun <T>PokemonItemView(
                         fontSize = 20.sp,
                         modifier = Modifier
                             .padding(10.dp)
+                            .align(Alignment.CenterVertically)
                     )
                 }
             }
@@ -121,7 +118,7 @@ fun <T>PokemonList(
 }
 
 @Composable
-fun pokemonFilter(
+fun PokemonFilter(
     callPokemon: (Int) -> Unit
 ) {
     Row {
@@ -132,12 +129,12 @@ fun pokemonFilter(
                 .padding(10.dp)
                 .align(Alignment.CenterVertically)
         )
-        generationSpinner(callPokemon)
+        GenerationSpinner(callPokemon)
     }
 }
 
 @Composable
-fun generationSpinner(
+fun GenerationSpinner(
     callPokemon: (Int) -> Unit
 ){
 

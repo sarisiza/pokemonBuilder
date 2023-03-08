@@ -45,9 +45,6 @@ class DexViewModel @Inject constructor(
             ViewIntents.GET_ITEMS -> {
                 getItemsList()
             }
-            ViewIntents.GET_MOVES -> {
-                getMovesList()
-            }
             else -> {}
         }
     }
@@ -56,14 +53,6 @@ class DexViewModel @Inject constructor(
         safeViewModelScope.launch {
             dexUseCases.getPokemonList(appLanguage.value,generation).collect{
                 _pokemonList.value = it
-            }
-        }
-    }
-
-    private fun getMovesList(){
-        safeViewModelScope.launch {
-            dexUseCases.getMovesList(appLanguage.value).collect{
-                _movesList.value = it
             }
         }
     }

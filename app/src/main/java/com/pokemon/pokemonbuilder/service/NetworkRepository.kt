@@ -9,8 +9,6 @@ import javax.inject.Inject
 
 interface NetworkRepository {
 
-    suspend fun getMoves(language: Language, version: Int?): ApolloResponse<MovesQuery.Data>
-
     suspend fun getItems(language: Language, version: Int?): ApolloResponse<ItemsQuery.Data>
 
     suspend fun getPokemon(language: Language, generation: Int): ApolloResponse<PokemonQuery.Data>
@@ -24,17 +22,6 @@ interface NetworkRepository {
 class NetworkRepositoryImpl @Inject constructor(
     private val apolloService: ApolloClient
 ): NetworkRepository{
-
-    override suspend fun getMoves(language: Language, version: Int?): ApolloResponse<MovesQuery.Data> {
-        return version?.let {
-            apolloService
-                .query(MovesQuery(Optional.present(language.id), Optional.present(it)))
-                .execute()
-        }?: apolloService
-            .query(MovesQuery(Optional.present(language.id), Optional.absent()))
-            .execute()
-    }
-
 
     override suspend fun getItems(language: Language, version: Int?): ApolloResponse<ItemsQuery.Data> {
         return version?.let {

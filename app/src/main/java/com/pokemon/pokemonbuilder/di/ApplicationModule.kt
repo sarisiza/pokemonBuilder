@@ -8,12 +8,6 @@ import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.preferencesDataStoreFile
-import com.custom_libs_spil.network_connection.utils.NetworkState
-import com.pokemon.pokemonbuilder.service.NetworkRepository
-import com.pokemon.pokemonbuilder.usecases.DexUseCases
-import com.pokemon.pokemonbuilder.usecases.GetItemsListUseCase
-import com.pokemon.pokemonbuilder.usecases.GetMovesListUseCase
-import com.pokemon.pokemonbuilder.usecases.GetPokemonListUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

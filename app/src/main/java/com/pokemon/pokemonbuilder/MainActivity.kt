@@ -26,6 +26,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
 import com.pokemon.pokemonbuilder.ui.theme.PokemonBuilderTheme
 import com.pokemon.pokemonbuilder.ui.views.DexScreens
+import com.pokemon.pokemonbuilder.ui.views.PokemonDetailsScreen
 import com.pokemon.pokemonbuilder.ui.views.PokemonInfo
 import com.pokemon.pokemonbuilder.ui.views.PokemonItemView
 import com.pokemon.pokemonbuilder.viewmodel.DexViewModel
@@ -49,38 +50,6 @@ class MainActivity : ComponentActivity() {
                                 Text(text = "Pokemon Builder")
                             }
                         )
-                    },
-                    bottomBar = {
-                        BottomNavigation {
-                            val navStackEntry by navController.currentBackStackEntryAsState()
-                            val currentDestination = navStackEntry?.destination
-                            val items = listOf(
-                                DexScreens.POKEDEX,
-                                DexScreens.MOVEDEX,
-                                DexScreens.ITEMDEX
-                            )
-                            items.forEach {screen ->
-                                BottomNavigationItem(
-                                    icon = { Icon(
-                                        painter = painterResource(id = screen.iconId),
-                                        contentDescription = null
-                                    )},
-                                    label = {Text(stringResource(id = screen.resourceId))},
-                                    selected = currentDestination?.hierarchy?.any {
-                                        it.route == screen.route
-                                    } == true,
-                                    onClick = {
-                                        navController.navigate(screen.route){
-                                            popUpTo(navController.graph.findStartDestination().id){
-                                                saveState = true
-                                            }
-                                            launchSingleTop = true
-                                            restoreState = true
-                                        }
-                                    }
-                                )
-                            }
-                        }
                     }
                 ) {
                     val dexViewModel = hiltViewModel<DexViewModel>()
@@ -101,29 +70,9 @@ class MainActivity : ComponentActivity() {
                                 )
                             }
                             composable("pokemon_details"){
-
-                            }
-                        }
-                        navigation(
-                            startDestination = "items_list",
-                            route = "itemdex"
-                        ){
-                            composable("items_list"){
-
-                            }
-                            composable("item_details"){
-
-                            }
-                        }
-                        navigation(
-                            startDestination = "moves_list",
-                            route = "movedex"
-                        ){
-                            composable("moves_list"){
-
-                            }
-                            composable("move_details"){
-
+                                dexViewModel.selectedPokemon?.let {
+                                    PokemonDetailsScreen(selectedPokemon = it)
+                                }
                             }
                         }
                     }
@@ -137,16 +86,5 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun DefaultPreview2() {
     PokemonBuilderTheme {
-        PokemonItemView(
-            item = PokemonQuery.Pokemon_v2_pokemon(
-                1,
-                "Bulbasaur",
-                listOf(),
-                listOf(),
-                listOf(),
-                null,
-                listOf()
-            ),
-            selectedItem = {})
     }
 }

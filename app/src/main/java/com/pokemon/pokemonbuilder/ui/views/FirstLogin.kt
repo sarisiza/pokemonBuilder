@@ -30,6 +30,7 @@ private const val TAG = "FirstLogin"
 @Composable
 fun LanguagePicker(loginViewModel: LoginViewModel, navController: NavController, mainPage: () -> Unit) {
     var selectedLanguage by remember { mutableStateOf(LanguageEnum.ENG) }
+    val isFirstUser = loginViewModel.firstTimeUser.collectAsState()
     Column(
         modifier = Modifier
             .fillMaxSize(),
@@ -53,7 +54,7 @@ fun LanguagePicker(loginViewModel: LoginViewModel, navController: NavController,
         selectedLanguage = languageSpinner()
         Button(onClick = {
             loginViewModel.getIntent(ViewIntents.PICK_LANGUAGE(selectedLanguage))
-            loginViewModel.firstTimeUser.value?.let {
+            isFirstUser.value?.let {
                 if(!it){
                     Log.d(TAG, "LanguagePicker: language picked")
                     navController.navigate("signUp")

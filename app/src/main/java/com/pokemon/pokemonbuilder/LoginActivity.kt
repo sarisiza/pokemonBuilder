@@ -8,6 +8,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -36,18 +37,20 @@ class LoginActivity : ComponentActivity() {
                 ) {
                     val loginViewModel = hiltViewModel<LoginViewModel>()
                     val navController = rememberNavController()
+                    loginViewModel.getIntent(ViewIntents.CHECK_FIRST_TIME_LANGUAGE)
+                    loginViewModel.getIntent(ViewIntents.CHECK_FIRST_TIME_USER)
+                    val isFirstLanguage = loginViewModel.fistTimeLanguage.collectAsState()
+                    val isFirstUser = loginViewModel.firstTimeUser.collectAsState()
                     NavHost(
                         navController = navController,
                         startDestination = "firstLogin"
                     ){
                         composable(route = "firstLogin"){
-                            loginViewModel.getIntent(ViewIntents.CHECK_FIRST_TIME_LANGUAGE)
-                            loginViewModel.getIntent(ViewIntents.CHECK_FIRST_TIME_USER)
-                            loginViewModel.fistTimeLanguage.value?.let {firstLanguage ->
+                            isFirstLanguage.value?.let {firstLanguage ->
                                 if(!firstLanguage){
                                     navController.navigate("pickLanguage")
                                 } else{
-                                    loginViewModel.firstTimeUser.value?.let {firstUser ->
+                                    isFirstUser.value?.let {firstUser ->
                                         if(!firstUser){
                                             navController.navigate("signUp")
                                         } else{

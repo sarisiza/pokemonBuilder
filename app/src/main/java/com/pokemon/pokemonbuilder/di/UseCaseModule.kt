@@ -9,8 +9,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
-import dagger.hilt.components.SingletonComponent
-import javax.inject.Singleton
 
 @Module
 @InstallIn(ViewModelComponent::class)
@@ -23,7 +21,6 @@ class UseCaseModule {
     ): DexUseCases =
         DexUseCases(
             GetPokemonListUseCase(networkRepository,serviceCall),
-            GetMovesListUseCase(networkRepository,serviceCall),
             GetItemsListUseCase(networkRepository,serviceCall)
         )
 
@@ -34,10 +31,7 @@ class UseCaseModule {
         LoginUseCases(
             SignUpUseCase(dataStore),
             PickLanguageUseCase(dataStore),
-            GetLoginInfoUseCase(dataStore),
-            GetLanguageUseCase(dataStore),
-            CheckIfLanguageUseCase(dataStore),
-            CheckIfUserUseCase(dataStore)
+            GetDatastoreUseCase(dataStore)
         )
 
 }
