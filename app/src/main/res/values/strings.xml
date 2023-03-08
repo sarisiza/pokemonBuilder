@@ -17,4 +17,24 @@
     <string name="bnb_pokedex">Pokedex</string>
     <string name="bnb_itemdex">Items</string>
     <string name="bnb_movedex">Moves</string>
+    <string name="label_hidden_ability">Hidden</string>
+    <string name="label_male">Male</string>
+    <string name="label_female">Female</string>
+    <string name="label_abilities">Abilities</string>
+    <string name="label_gender_rate">Gender Rate</string>
+    <string name="label_legendary_status">Legendary</string>
+    <string name="label_genderless">Genderless</string>
+    <string name="label_legendary">Is Legendary</string>
+    <string name="label_no">No</string>
+    <string name="label_yes">Yes</string>
+    <string name="label_mythical">Is Mythical</string>
+    <string name="label_egg_groups">Egg Groups</string>
+    <string name="label_type">Type</string>
+    <string name="label_base_stats">Base Stats</string>
+    <string name="label_learning_method">Learning method:</string>
+    <string name="label_power">Power</string>
+    <string name="label_pp">PP</string>
+    <string name="label_accuracy">Accuracy</string>
+    <string name="label_strengths">Strengths</string>
+    <string name="label_weaknesses">Weaknesses</string>
 </resources>

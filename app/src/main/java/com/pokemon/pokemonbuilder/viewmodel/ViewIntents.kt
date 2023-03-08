@@ -21,8 +21,6 @@ sealed class ViewIntents{
 
     data class GET_POKEMON(val generation: Int): ViewIntents()
 
-    object GET_MOVES: ViewIntents()
-
     object GET_ITEMS: ViewIntents()
 
     data class SAVE_POKEMON(val pokemon: PokemonDb): ViewIntents()
