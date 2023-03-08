@@ -18,7 +18,7 @@ import androidx.navigation.compose.rememberNavController
 import com.pokemon.pokemonbuilder.ui.theme.PokemonBuilderTheme
 import com.pokemon.pokemonbuilder.ui.views.LanguagePicker
 import com.pokemon.pokemonbuilder.ui.views.SignUp
-import com.pokemon.pokemonbuilder.viewmodel.LoginViewModel
+import com.pokemon.pokemonbuilder.viewmodel.DexViewModel
 import com.pokemon.pokemonbuilder.viewmodel.ViewIntents
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -35,26 +35,28 @@ class LoginActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    val loginViewModel = hiltViewModel<LoginViewModel>()
+                    val dexViewModel = hiltViewModel<DexViewModel>()
                     val navController = rememberNavController()
-                    loginViewModel.getIntent(ViewIntents.CHECK_FIRST_TIME_LANGUAGE)
-                    loginViewModel.getIntent(ViewIntents.CHECK_FIRST_TIME_USER)
-                    val isFirstLanguage = loginViewModel.fistTimeLanguage.collectAsState()
-                    val isFirstUser = loginViewModel.firstTimeUser.collectAsState()
+                    dexViewModel.getIntent(ViewIntents.CHECK_FIRST_TIME_LANGUAGE)
+                    dexViewModel.getIntent(ViewIntents.CHECK_FIRST_TIME_USER)
+                    val isFirstLanguage = dexViewModel.fistTimeLanguage.collectAsState()
+                    val isFirstUser = dexViewModel.firstTimeUser.collectAsState()
                     NavHost(
                         navController = navController,
                         startDestination = "firstLogin"
                     ){
                         composable(route = "firstLogin"){
                             isFirstLanguage.value?.let {firstLanguage ->
-                                if(!firstLanguage){
+                                Log.d(TAG, "change language: ${dexViewModel.changeLanguage}")
+                                if(!firstLanguage || dexViewModel.changeLanguage){
                                     navController.navigate("pickLanguage")
                                 } else{
                                     isFirstUser.value?.let {firstUser ->
                                         if(!firstUser){
                                             navController.navigate("signUp")
                                         } else{
-                                            Log.d(TAG, "FirstLogin: gets here")
+                                            dexViewModel.getIntent(ViewIntents.GET_USER)
+                                            dexViewModel.getIntent(ViewIntents.GET_LANGUAGE)
                                             goToMainActivity()
                                         }
                                     }
@@ -63,7 +65,7 @@ class LoginActivity : ComponentActivity() {
                         }
                         composable(route = "pickLanguage"){
                             LanguagePicker(
-                                loginViewModel = loginViewModel,
+                                dexViewModel = dexViewModel,
                                 navController = navController
                             ) {
                                 goToMainActivity()
@@ -71,7 +73,7 @@ class LoginActivity : ComponentActivity() {
                         }
                         composable(route = "signUp"){
                             SignUp(
-                                loginViewModel = loginViewModel
+                                dexViewModel = dexViewModel
                             ){
                                 goToMainActivity()
                             }

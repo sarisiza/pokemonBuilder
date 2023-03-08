@@ -41,7 +41,7 @@ fun PokemonInfo(
     navController: NavController
 ) {
     Column {
-        PokemonFilter(){
+        PokemonFilter(dexViewModel){
             dexViewModel.getIntent(ViewIntents.GET_POKEMON(it))
         }
         when(val state = dexViewModel.pokemonList.collectAsState(UIState.LOADING).value){
@@ -119,6 +119,7 @@ fun <T>PokemonList(
 
 @Composable
 fun PokemonFilter(
+    dexViewModel: DexViewModel,
     callPokemon: (Int) -> Unit
 ) {
     Row {
@@ -129,18 +130,19 @@ fun PokemonFilter(
                 .padding(10.dp)
                 .align(Alignment.CenterVertically)
         )
-        GenerationSpinner(callPokemon)
+        GenerationSpinner(dexViewModel,callPokemon)
     }
 }
 
 @Composable
 fun GenerationSpinner(
+    dexViewModel: DexViewModel,
     callPokemon: (Int) -> Unit
 ){
 
     var expanded by remember { mutableStateOf(false) }
     val generations = GenerationEnum.values()
-    var selectedGeneration by remember { mutableStateOf(GenerationEnum.GEN_IX) }
+    var selectedGeneration by remember { mutableStateOf(dexViewModel.selectedGeneration) }
     var selectedGenerationText by remember { mutableStateOf(selectedGeneration.generation.region) }
     var textFieldSize by remember { mutableStateOf(Size.Zero) }
     val icon = if(expanded)
@@ -177,6 +179,7 @@ fun GenerationSpinner(
                 DropdownMenuItem(onClick = {
                     selectedGeneration = generation
                     selectedGenerationText = generation.generation.region
+                    dexViewModel.selectedGeneration = selectedGeneration
                     expanded = false
                     callPokemon.invoke(selectedGeneration.generation.id)
                 }) {

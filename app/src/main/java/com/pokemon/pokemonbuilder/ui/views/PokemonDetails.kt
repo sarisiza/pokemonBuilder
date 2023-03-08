@@ -6,6 +6,7 @@ import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -61,8 +62,8 @@ fun PokemonDetailsScreen(selectedPokemon: PokemonQuery.Pokemon_v2_pokemon) {
         item {
             TypesEfficacyCard(selectedPokemon = selectedPokemon)
         }
-        item{
-            MovesCard(selectedPokemon = selectedPokemon)
+        items(selectedPokemon.pokemon_v2_pokemonmoves){
+            DetailView(detail = it)
         }
     }
 }
@@ -71,14 +72,14 @@ fun PokemonDetailsScreen(selectedPokemon: PokemonQuery.Pokemon_v2_pokemon) {
 fun PokemonNameCard(selectedPokemon: PokemonQuery.Pokemon_v2_pokemon) {
     Row(modifier = Modifier.padding(10.dp)) {
         val pokemonImage = POKEMON_IMAGE_URL + selectedPokemon.id + ".png"
-            AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(pokemonImage)
-                    .build(),
-                contentDescription = selectedPokemon.name,
-                contentScale = ContentScale.None,
-                modifier = Modifier.weight(0.4F)
-            )
+        AsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(pokemonImage)
+                .build(),
+            contentDescription = selectedPokemon.name,
+            contentScale = ContentScale.None,
+            modifier = Modifier.weight(0.4F)
+        )
         Text(
             text = selectedPokemon.name.replaceFirstChar {
                 if (it.isLowerCase()) it.titlecase(
@@ -286,11 +287,6 @@ fun TypesEfficacyCard(selectedPokemon: PokemonQuery.Pokemon_v2_pokemon) {
 }
 
 @Composable
-fun MovesCard(selectedPokemon: PokemonQuery.Pokemon_v2_pokemon) {
-    CreateDetailsList(detailsSet = selectedPokemon.pokemon_v2_pokemonmoves)
-}
-
-@Composable
 fun <T>CreateDetailsList(detailsSet: List<T>) {
     Column {
         detailsSet.forEach {
@@ -301,24 +297,11 @@ fun <T>CreateDetailsList(detailsSet: List<T>) {
 
 @Composable
 fun <T>CreateDetailsRow(detailsSet: List<T>) {
-    Column() {
-        Row{
-            for (i in 0 until ((detailsSet.size-1)/3)+1){
-                DetailView(detail = detailsSet[i])
-            }
-        }
-        Row {
-            for(i in ((detailsSet.size-1)/3)+1 until((detailsSet.size-1)*2/3)+1){
-                DetailView(detail = detailsSet[i])
-            }
-        }
-        Row {
-            for(i in ((detailsSet.size-1)*2/3)+1 until(detailsSet.size)){
-                DetailView(detail = detailsSet[i])
-            }
+    LazyRow{
+        items(items = detailsSet){
+            DetailView(detail = it)
         }
     }
-
 }
 
 @Composable

@@ -37,4 +37,7 @@
     <string name="label_accuracy">Accuracy</string>
     <string name="label_strengths">Strengths</string>
     <string name="label_weaknesses">Weaknesses</string>
+    <string name="label_back">Back</string>
+    <string name="label_menu">Menu</string>
+    <string name="label_hello">Hello</string>
 </resources>
