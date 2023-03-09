@@ -16,10 +16,12 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -32,11 +34,9 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
 import com.pokemon.pokemonbuilder.ui.theme.PokemonBuilderTheme
-import com.pokemon.pokemonbuilder.ui.views.DexScreens
-import com.pokemon.pokemonbuilder.ui.views.PokemonDetailsScreen
-import com.pokemon.pokemonbuilder.ui.views.PokemonInfo
-import com.pokemon.pokemonbuilder.ui.views.PokemonItemView
+import com.pokemon.pokemonbuilder.ui.views.*
 import com.pokemon.pokemonbuilder.viewmodel.DexViewModel
+import com.pokemon.pokemonbuilder.viewmodel.LoginViewModel
 import com.pokemon.pokemonbuilder.viewmodel.ViewIntents
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -52,6 +52,7 @@ class MainActivity : ComponentActivity() {
             PokemonBuilderTheme {
                 val navController = rememberNavController()
                 val dexViewModel = hiltViewModel<DexViewModel>()
+                val loginViewModel = hiltViewModel<LoginViewModel>()
                 val scaffoldState = rememberScaffoldState()
                 val scope = rememberCoroutineScope()
                 Scaffold(
@@ -86,9 +87,7 @@ class MainActivity : ComponentActivity() {
                             actions = {
                                 IconButton(
                                     onClick = {
-                                        dexViewModel.changeLanguage = true
-                                        Log.d(TAG, "go to language: ${dexViewModel.changeLanguage}")
-                                        goToLoginActivity()
+                                        navController.navigate(DexScreens.CHANGE_LANGUAGE.route)
                                     }
                                 ) {
                                     Icon(
@@ -100,7 +99,7 @@ class MainActivity : ComponentActivity() {
                         )
                     },
                     drawerContent = {
-                        DrawerHeader(dexViewModel = dexViewModel)
+                        DrawerHeader(loginViewModel = loginViewModel)
                         DrawerBody(navController = navController) {
                             scope.launch {
                                 scaffoldState.drawerState.close()
@@ -111,25 +110,20 @@ class MainActivity : ComponentActivity() {
                     PokemonNavGraph(
                         navController = navController,
                         dexViewModel = dexViewModel,
+                        loginViewModel = loginViewModel,
                         modifier = Modifier.padding(it)
                     )
                 }
             }
         }
     }
-
-    private fun goToLoginActivity(){
-        Intent(this,LoginActivity::class.java).apply {
-            startActivity(this)
-        }
-    }
-
 }
 
 @Composable
 fun PokemonNavGraph(
     navController: NavHostController,
     dexViewModel: DexViewModel,
+    loginViewModel: LoginViewModel,
     modifier: Modifier
 ) {
     NavHost(
@@ -142,10 +136,18 @@ fun PokemonNavGraph(
             route = DexScreens.POKEDEX.route
         ) {
             composable("pokemon_list") {
-                dexViewModel.getIntent(ViewIntents.GET_POKEMON(dexViewModel.selectedGeneration.generation.id))
+                val language = loginViewModel.appLanguage.value
+                loginViewModel.getIntent(ViewIntents.GET_LANGUAGE)
+                language?.let {
+                    dexViewModel.getIntent(ViewIntents.GET_POKEMON(
+                        it,
+                        dexViewModel.selectedGeneration.generation.id
+                    ))
+                }
                 dexViewModel.updateBackTrack(false)
                 PokemonInfo(
                     dexViewModel = dexViewModel,
+                    loginViewModel = loginViewModel,
                     navController = navController
                 )
             }
@@ -156,19 +158,43 @@ fun PokemonNavGraph(
                 }
             }
         }
+        navigation(
+            startDestination = "change_language",
+            route = DexScreens.CHANGE_LANGUAGE.route
+        ){
+            composable("change_language"){
+                LanguagePicker(loginViewModel = loginViewModel) {
+                    navController.navigate(DexScreens.POKEDEX.route)
+                }
+            }
+        }
     }
 }
 
 @Composable
-fun DrawerHeader(dexViewModel: DexViewModel) {
+fun DrawerHeader(loginViewModel: LoginViewModel) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(40.dp)
     ) {
-        Text(text = stringResource(R.string.label_hello))
-        dexViewModel.loggedUser.value?.let {
-            Text(text = it.firstName + it.lastName + "!")
+        Column {
+            Text(
+                text = stringResource(R.string.label_hello)+",",
+                fontSize = 30.sp
+            )
+            val user = loginViewModel.loggedUser.value
+            loginViewModel.getIntent(ViewIntents.GET_USER)
+            user?.let {
+                Text(
+                    text = it.firstName,
+                    fontSize = 30.sp
+                )
+                Text(
+                    text = it.lastName + "!",
+                    fontSize = 30.sp
+                )
+            }
         }
     }
 }
@@ -180,7 +206,7 @@ fun DrawerBody(
 ) {
     Column {
         DrawerMenuItem(
-            DexScreens.POKEDEX
+            screen = DexScreens.POKEDEX
         ) {
             navController.navigate(DexScreens.POKEDEX.route)
             closeNavDrawer()
@@ -200,10 +226,12 @@ fun DrawerMenuItem(
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(
-            painter = painterResource(id = screen.iconId),
-            contentDescription = null
-        )
+        screen.iconId?.let {screenImg ->
+            Icon(
+                painter = painterResource(id = screenImg),
+                contentDescription = null
+            )
+        }
         Spacer(modifier = Modifier.padding(16.dp))
         Text(text = stringResource(id = screen.resourceId))
     }

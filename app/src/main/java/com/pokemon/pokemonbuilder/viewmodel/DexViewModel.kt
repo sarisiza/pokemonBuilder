@@ -42,21 +42,6 @@ class DexViewModel @Inject constructor(
     private val _hasBackTrack: MutableState<Boolean> = mutableStateOf(false)
     val hasBackTrack: State<Boolean> get() = _hasBackTrack
 
-    private val mAppLanguage: MutableState<LanguageEnum> = mutableStateOf(LanguageEnum.ENG)
-    val appLanguage: State<LanguageEnum> get() = mAppLanguage
-
-    private val mLoggedUser: MutableState<User?> = mutableStateOf(null)
-    val loggedUser: State<User?> get() = mLoggedUser
-
-    private val _firstTimeLanguage: MutableStateFlow<Boolean?> = MutableStateFlow(null)
-    val fistTimeLanguage: StateFlow<Boolean?> get() = _firstTimeLanguage
-
-    private val _firstTimeUser: MutableStateFlow<Boolean?> = MutableStateFlow(null)
-    val firstTimeUser: StateFlow<Boolean?> get() = _firstTimeUser
-
-    private var accessJob: Job? = null
-    private var accessJob2: Job? = null
-
     var changeLanguage = false
     var selectedPokemon: PokemonQuery.Pokemon_v2_pokemon? = null
     var selectedItemInfo: ItemsQuery.Pokemon_v2_item? = null
@@ -65,44 +50,26 @@ class DexViewModel @Inject constructor(
     fun getIntent(intent: ViewIntents){
         when(intent){
             is ViewIntents.GET_POKEMON -> {
-                getPokemonList(intent.generation)
+                getPokemonList(intent.language,intent.generation)
             }
-            ViewIntents.GET_ITEMS -> {
-                getItemsList()
-            }
-            ViewIntents.CHECK_FIRST_TIME_LANGUAGE -> {
-                checkFirstTimeLanguage()
-            }
-            is ViewIntents.PICK_LANGUAGE -> {
-                getLanguage(intent.language)
-            }
-            is ViewIntents.SIGN_UP -> {
-                signUp(intent.user)
-            }
-            ViewIntents.GET_LANGUAGE -> {
-                getLanguage()
-            }
-            ViewIntents.GET_USER -> {
-                signUp()
-            }
-            ViewIntents.CHECK_FIRST_TIME_USER -> {
-                checkFirstTimeUser()
+            is ViewIntents.GET_ITEMS -> {
+                getItemsList(intent.language)
             }
             else -> {}
         }
     }
 
-    private fun getPokemonList(generation: Int){
+    private fun getPokemonList(language: LanguageEnum, generation: Int){
         safeViewModelScope.launch {
-            dexUseCases.getPokemonList(appLanguage.value,generation).collect{
+            dexUseCases.getPokemonList(language,generation).collect{
                 _pokemonList.value = it
             }
         }
     }
 
-    private fun getItemsList(){
+    private fun getItemsList(language: LanguageEnum){
         safeViewModelScope.launch {
-            dexUseCases.getItemsList(appLanguage.value).collect{
+            dexUseCases.getItemsList(language).collect{
                 _itemsList.value = it
             }
         }
@@ -110,59 +77,6 @@ class DexViewModel @Inject constructor(
 
     fun updateBackTrack(backTrack: Boolean){
         _hasBackTrack.value = backTrack
-    }
-
-    private fun getLanguage(language: LanguageEnum? = null){
-        accessJob?.cancel()
-        accessJob = null
-        safeViewModelScope.launch {
-            if(language == null){
-                loginUseCases.getDatastoreUseCase().collect{
-                    val langId = it[intPreferencesKey("LANGUAGE")]
-                    when(langId){
-                        7 -> mAppLanguage.value = LanguageEnum.ESP
-                        9 -> mAppLanguage.value = LanguageEnum.ENG
-                    }
-                }
-            } else{
-                mAppLanguage.value = loginUseCases.languageUseCase(language)
-            }
-        }
-    }
-
-    private fun signUp(user: User? = null){
-        accessJob2?.cancel()
-        accessJob2 = null
-        safeViewModelScope.launch {
-            if(user == null){
-                loginUseCases.getDatastoreUseCase().collect{
-                    mLoggedUser.value?.firstName = it[stringPreferencesKey("FIRST_NAME")]?:""
-                    mLoggedUser.value?.lastName = it[stringPreferencesKey("LAST_NAME")]?:""
-                }
-            } else{
-                mLoggedUser.value = loginUseCases.signUpUseCase(user.firstName,user.lastName)
-            }
-        }
-    }
-
-    private fun checkFirstTimeLanguage(){
-        if(accessJob == null){
-            accessJob = safeViewModelScope.launch {
-                loginUseCases.getDatastoreUseCase().collect{
-                    _firstTimeLanguage.value = it[booleanPreferencesKey("LANGUAGE_PICKED")]?:false
-                }
-            }
-        }
-    }
-
-    private fun checkFirstTimeUser(){
-        if(accessJob2 == null) {
-            accessJob2 = safeViewModelScope.launch {
-                loginUseCases.getDatastoreUseCase().collect{
-                    _firstTimeUser.value = it[booleanPreferencesKey("LOGGED_IN")]?:false
-                }
-            }
-        }
     }
 
 }

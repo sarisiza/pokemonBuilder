@@ -17,13 +17,12 @@ class SignUpUseCase @Inject constructor(
     suspend operator fun invoke(
         firstName: String,
         lastName: String,
-    ): User {
+    ) {
         dataStore.edit {
             it[stringPreferencesKey("FIRST_NAME")] = firstName
             it[stringPreferencesKey("LAST_NAME")] = lastName
             it[booleanPreferencesKey("LOGGED_IN")] = true
         }
-        return User(firstName,lastName)
     }
 
 }

@@ -19,9 +19,9 @@ sealed class ViewIntents{
 
     object CHECK_FIRST_TIME_USER: ViewIntents()
 
-    data class GET_POKEMON(val generation: Int): ViewIntents()
+    data class GET_POKEMON(val language: LanguageEnum, val generation: Int): ViewIntents()
 
-    object GET_ITEMS: ViewIntents()
+    data class GET_ITEMS(val language: LanguageEnum): ViewIntents()
 
     data class SAVE_POKEMON(val pokemon: PokemonDb): ViewIntents()
 
