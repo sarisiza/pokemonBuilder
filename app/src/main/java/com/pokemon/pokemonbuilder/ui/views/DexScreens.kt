@@ -13,12 +13,17 @@ import com.pokemon.pokemonbuilder.R
 sealed class DexScreens(
     val route: String,
     @StringRes val resourceId: Int,
-    @DrawableRes val iconId: Int
+    @DrawableRes val iconId: Int? = null
 ){
     object POKEDEX: DexScreens(
         "pokedex",
         R.string.bnb_pokedex,
         R.drawable.ic_pokemon_24
+    )
+
+    object CHANGE_LANGUAGE: DexScreens(
+        "language",
+        R.string.icon_pick_language
     )
 
 }

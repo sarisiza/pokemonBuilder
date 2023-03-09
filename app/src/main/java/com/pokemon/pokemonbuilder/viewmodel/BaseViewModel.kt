@@ -30,8 +30,4 @@ open class BaseViewModel: ViewModel() {
         }
     }
 
-    companion object{
-
-    }
-
 }

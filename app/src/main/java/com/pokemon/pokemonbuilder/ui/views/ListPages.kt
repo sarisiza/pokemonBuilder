@@ -30,6 +30,7 @@ import com.pokemon.pokemonbuilder.utils.GenerationEnum
 import com.pokemon.pokemonbuilder.utils.POKEMON_IMAGE_URL
 import com.pokemon.pokemonbuilder.utils.UIState
 import com.pokemon.pokemonbuilder.viewmodel.DexViewModel
+import com.pokemon.pokemonbuilder.viewmodel.LoginViewModel
 import com.pokemon.pokemonbuilder.viewmodel.ViewIntents
 import java.util.*
 
@@ -38,11 +39,16 @@ private const val TAG = "ListPages"
 @Composable
 fun PokemonInfo(
     dexViewModel: DexViewModel,
+    loginViewModel: LoginViewModel,
     navController: NavController
 ) {
     Column {
-        PokemonFilter(dexViewModel){
-            dexViewModel.getIntent(ViewIntents.GET_POKEMON(it))
+        val language = loginViewModel.appLanguage.value
+        loginViewModel.getIntent(ViewIntents.GET_LANGUAGE)
+        PokemonFilter(dexViewModel){generation->
+            language?.let {lang->
+                dexViewModel.getIntent(ViewIntents.GET_POKEMON(lang,generation))
+            }
         }
         when(val state = dexViewModel.pokemonList.collectAsState(UIState.LOADING).value){
             is UIState.ERROR -> {}

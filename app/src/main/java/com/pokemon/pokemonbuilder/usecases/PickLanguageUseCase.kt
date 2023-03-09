@@ -17,13 +17,11 @@ class PickLanguageUseCase @Inject constructor(
 
     suspend operator fun invoke(
         language: LanguageEnum
-    ): LanguageEnum{
+    ){
         dataStore.edit {
             it[intPreferencesKey("LANGUAGE")] = language.language.id
             it[booleanPreferencesKey("LANGUAGE_PICKED")] = true
         }
-        Log.d(TAG, "language: ${language.language.name}")
-        return language
     }
 
 }
