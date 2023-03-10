@@ -40,4 +40,5 @@
     <string name="label_back">Back</string>
     <string name="label_menu">Menu</string>
     <string name="label_hello">Hello</string>
+    <string name="gender_male">Male</string>
 </resources>
