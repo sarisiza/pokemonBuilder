@@ -52,13 +52,13 @@ fun PokemonDetailsScreen(selectedPokemon: PokemonQuery.Pokemon_v2_pokemon) {
             Row(modifier = Modifier.fillMaxWidth()){
                 PokemonAbilitiesCard(selectedPokemon = selectedPokemon)
                 GenderRatesCard(selectedPokemon = selectedPokemon)
-                TypesCard(selectedPokemon = selectedPokemon)
+                EggGroupCard(selectedPokemon = selectedPokemon)
             }
         }
         item {
             Row(modifier = Modifier.fillMaxWidth()) {
                 LegendaryStatusCard(selectedPokemon = selectedPokemon)
-                EggGroupCard(selectedPokemon = selectedPokemon)
+                TypesCard(selectedPokemon = selectedPokemon)
             }
         }
         item {
@@ -363,7 +363,7 @@ fun <T>DetailView(detail: T) {
 @Composable
 fun MoveViewHolder(pokemonMove: PokemonQuery.Pokemon_v2_pokemonmofe) {
     val moveSpecsList: MutableList<MoveSpecs> = mutableListOf()
-    Column {
+    Column(modifier = Modifier.padding(10.dp)) {
         Row {
             pokemonMove.pokemon_v2_move?.let {move ->
                 moveSpecsList.add(MoveSpecs(stringResource(R.string.label_power),move.power?.toString()?:"-"))
@@ -391,9 +391,9 @@ fun MoveViewHolder(pokemonMove: PokemonQuery.Pokemon_v2_pokemonmofe) {
                             .build(),
                         contentDescription = it.name,
                         modifier = Modifier
-                            .padding(5.dp)
                             .background(colorResource(id = classColor))
                             .clip(RoundedCornerShape(16.dp))
+                            .padding(5.dp)
                     )
                 }
                 move.pokemon_v2_type?.let {type ->
@@ -498,7 +498,7 @@ fun TypeViewHolder(type: PokemonQuery.Pokemon_v2_type1) {
             contentDescription = type.name,
             modifier = Modifier
                 .background(colorResource(id = typeColor))
-                .weight(0.3F)
+                .weight(0.2F)
                 .clip(CircleShape)
                 .padding(5.dp)
         )
