@@ -151,6 +151,7 @@ fun languageSpinner(): LanguageEnum {
         OutlinedTextField(
             value = selectedLanguageName,
             onValueChange = {selectedLanguageName = it},
+            enabled = false,
             modifier = Modifier
                 .fillMaxWidth()
                 .onGloballyPositioned { coordinates ->

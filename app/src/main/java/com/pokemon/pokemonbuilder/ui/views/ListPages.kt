@@ -1,14 +1,18 @@
 package com.pokemon.pokemonbuilder.ui.views
 
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
@@ -16,6 +20,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -57,7 +62,8 @@ fun PokemonInfo(
             }
             is UIState.SUCCESS -> {
                 PokemonList(
-                    pokemonItems = state.response
+                    pokemonItems = state.response,
+                    dexViewModel = dexViewModel
                 ){
                     dexViewModel.selectedPokemon = it
                     navController.navigate("pokemon_details")
@@ -111,9 +117,13 @@ fun <T>PokemonItemView(
 @Composable
 fun <T>PokemonList(
     pokemonItems: List<T>,
+    dexViewModel: DexViewModel,
     selectedItem: (T) -> Unit
 ){
-    LazyColumn{
+    
+    LazyColumn(
+        state = rememberForeverLazyListState(key = dexViewModel.selectedGeneration.generation.region)
+    ){
         itemsIndexed(items = pokemonItems){_,item ->
             PokemonItemView(
                 item = item,
@@ -160,6 +170,7 @@ fun GenerationSpinner(
     ) {
         OutlinedTextField(
             value = selectedGenerationText,
+            enabled = false,
             onValueChange = {selectedGenerationText = it},
             modifier = Modifier
                 .fillMaxWidth()
