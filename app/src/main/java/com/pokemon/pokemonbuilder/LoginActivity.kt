@@ -47,12 +47,17 @@ class LoginActivity : ComponentActivity() {
                         composable(route = "firstLogin"){
                             isFirstLanguage.value?.let {firstLanguage ->
                                 if(!firstLanguage){
-                                    navController.navigate("pickLanguage")
+                                    navController.navigate("pickLanguage"){
+                                        popUpTo(0)
+                                    }
                                 } else{
                                     isFirstUser.value?.let {firstUser ->
                                         if(!firstUser){
-                                            navController.navigate("signUp")
+                                            navController.navigate("signUp"){
+                                                popUpTo(0)
+                                            }
                                         } else{
+                                            navController.backQueue.clear()
                                             goToMainActivity()
                                         }
                                     }
@@ -77,6 +82,7 @@ class LoginActivity : ComponentActivity() {
                             SignUp(
                                 loginViewModel = loginViewModel
                             ){
+                                navController.backQueue.clear()
                                 goToMainActivity()
                             }
                         }
@@ -97,6 +103,5 @@ class LoginActivity : ComponentActivity() {
 @Composable
 fun DefaultPreview() {
     PokemonBuilderTheme {
-
     }
 }
