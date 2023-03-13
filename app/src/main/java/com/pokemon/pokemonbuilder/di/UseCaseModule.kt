@@ -22,7 +22,9 @@ class UseCaseModule {
     ): DexUseCases =
         DexUseCases(
             GetPokemonListUseCase(networkRepository,serviceCall),
-            GetItemsListUseCase(networkRepository,serviceCall)
+            GetItemsListUseCase(networkRepository,serviceCall),
+            GetNaturesListUseCase(networkRepository,serviceCall),
+            GetTypesListUseCase(networkRepository, serviceCall)
         )
 
     @Provides
@@ -48,7 +50,9 @@ class UseCaseModule {
             AddPokemonToTeamUseCase(localRepository),
             RemovePokemonFromTeamUseCase(localRepository),
             GetPokemonInTeamUseCase(localRepository),
-            ModifyTeamNameUseCase(localRepository)
+            ModifyTeamNameUseCase(localRepository),
+            CreateTeamUseCase(localRepository),
+            DeleteTeamUseCase(localRepository)
         )
 
 }

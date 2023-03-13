@@ -9,5 +9,7 @@ data class BuilderUseCases(
     val addPokemonToTeam: AddPokemonToTeamUseCase,
     val removePokemonFromTeam: RemovePokemonFromTeamUseCase,
     val getPokemonInTeam: GetPokemonInTeamUseCase,
-    val modifyTeamName: ModifyTeamNameUseCase
+    val modifyTeamName: ModifyTeamNameUseCase,
+    val createTeam: CreateTeamUseCase,
+    val deleteTeam: DeleteTeamUseCase
 )
