@@ -1,5 +1,7 @@
 package com.pokemon.pokemonbuilder.di
 
+import com.pokemon.pokemonbuilder.database.LocalRepository
+import com.pokemon.pokemonbuilder.database.LocalRepositoryImpl
 import com.pokemon.pokemonbuilder.service.NetworkRepository
 import com.pokemon.pokemonbuilder.service.NetworkRepositoryImpl
 import dagger.Binds
@@ -15,5 +17,10 @@ abstract class RepositoryModule {
     abstract fun providesNetworkRepository(
         networkRepositoryImpl: NetworkRepositoryImpl
     ): NetworkRepository
+
+    @Binds
+    abstract fun providesLocalRepository(
+        localRepositoryImpl: LocalRepositoryImpl
+    ): LocalRepository
 
 }

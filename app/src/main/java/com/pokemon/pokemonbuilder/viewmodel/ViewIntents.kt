@@ -1,7 +1,7 @@
 package com.pokemon.pokemonbuilder.viewmodel
 
-import com.pokemon.pokemonbuilder.entities.PokemonDb
-import com.pokemon.pokemonbuilder.entities.PokemonTeamDb
+import com.pokemon.pokemonbuilder.database.entities.PokemonDb
+import com.pokemon.pokemonbuilder.database.entities.PokemonTeamDb
 import com.pokemon.pokemonbuilder.utils.LanguageEnum
 import com.pokemon.pokemonbuilder.utils.User
 
