@@ -10,18 +10,21 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
-class GetTeamsUseCase @Inject constructor(
+class DeleteTeamUseCase @Inject constructor(
     private val localRepository: LocalRepository,
     private val coroutineDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) {
-    operator fun invoke(): Flow<UIState<List<PokemonTeam>>> =
-        flow{
-            emit(UIState.LOADING)
-            try {
-                val pokemonTeams = localRepository.getAllTeams()
-                emit(UIState.SUCCESS(pokemonTeams))
-            } catch (e: Exception){
-                emit(UIState.ERROR(e))
-            }
-        }.flowOn(coroutineDispatcher)
+
+    operator fun invoke(
+        pokemonTeam: PokemonTeam
+    ): Flow<UIState<Boolean>> = flow {
+        emit(UIState.LOADING)
+        try {
+            localRepository.deleteTeam(pokemonTeam)
+            emit(UIState.SUCCESS(true))
+        } catch (e: Exception){
+            emit(UIState.ERROR(e))
+        }
+    }.flowOn(coroutineDispatcher)
+
 }

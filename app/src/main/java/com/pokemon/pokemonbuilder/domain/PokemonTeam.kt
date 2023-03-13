@@ -7,7 +7,12 @@ data class PokemonTeam(
     val id: Int,
     var name: String = "Team $id",
     val pokemon: MutableList<Int>
-)
+){
+    fun isComplete(): Boolean{
+        return (pokemon.size>=6)
+    }
+
+}
 
 fun List<PokemonTeamDb>.mapToTeam(): List<PokemonTeam>{
     val gson = Gson()
