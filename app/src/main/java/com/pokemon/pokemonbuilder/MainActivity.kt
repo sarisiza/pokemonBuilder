@@ -14,6 +14,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,24 +50,36 @@ private const val TAG = "MainActivity"
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-
     var configurationChanged = false
 
+    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            val windowSizeClass = calculateWindowSizeClass(this)
             PokemonBuilderTheme {
                 val navController = rememberNavController()
                 val dexViewModel = hiltViewModel<DexViewModel>()
                 val loginViewModel = hiltViewModel<LoginViewModel>()
                 val scaffoldState = rememberScaffoldState()
                 val scope = rememberCoroutineScope()
+                val headerSize =
+                    when(windowSizeClass.widthSizeClass){
+                        WindowWidthSizeClass.Compact -> 28.sp
+                        WindowWidthSizeClass.Medium -> 30.sp
+                        WindowWidthSizeClass.Expanded -> 32.sp
+                        else -> 20.sp
+                    }
                 Scaffold(
                     scaffoldState = scaffoldState,
                     topBar = {
                         TopAppBar(
+                            modifier = Modifier.padding(5.dp),
                             title = {
-                                Text(text = "Pokemon Builder")
+                                Text(
+                                    text = "Pokemon Builder",
+                                    fontSize = headerSize
+                                )
                             },
                             navigationIcon = {
                                 Row {
@@ -115,7 +131,8 @@ class MainActivity : ComponentActivity() {
                         dexViewModel = dexViewModel,
                         loginViewModel = loginViewModel,
                         modifier = Modifier.padding(it),
-                        configurationChanged
+                        windowSizeClass = windowSizeClass,
+                        configuration = configurationChanged
                     ){updateConfiguration(false)}
                 }
             }
@@ -139,6 +156,7 @@ fun PokemonNavGraph(
     dexViewModel: DexViewModel,
     loginViewModel: LoginViewModel,
     modifier: Modifier,
+    windowSizeClass: WindowSizeClass,
     configuration: Boolean,
     updateConfig: () -> Unit
 ) {
@@ -173,7 +191,8 @@ fun PokemonNavGraph(
                 PokemonInfo(
                     dexViewModel = dexViewModel,
                     loginViewModel = loginViewModel,
-                    navController = navController
+                    navController = navController,
+                    windowSizeClass = windowSizeClass
                 )
             }
             composable("pokemon_details") {
@@ -181,7 +200,10 @@ fun PokemonNavGraph(
                 goingBack = true
                 dexViewModel.updateBackTrack(true)
                 dexViewModel.selectedPokemon?.let {
-                    PokemonDetailsScreen(selectedPokemon = it)
+                    PokemonDetailsScreen(
+                        selectedPokemon = it,
+                        windowSizeClass = windowSizeClass
+                    )
                 }
             }
         }

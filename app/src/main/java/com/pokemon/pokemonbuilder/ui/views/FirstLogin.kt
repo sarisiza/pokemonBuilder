@@ -10,9 +10,11 @@ import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -52,7 +54,10 @@ fun LanguagePicker(loginViewModel: LoginViewModel, navigate: () -> Unit) {
             fontSize = 20.sp
         )
         selectedLanguage = languageSpinner()
-        Button(onClick = {
+        Button(
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally),
+            onClick = {
             loginViewModel.getIntent(ViewIntents.PICK_LANGUAGE(selectedLanguage))
             navigate()
         }) {
@@ -70,6 +75,8 @@ fun SignUp(loginViewModel: LoginViewModel, mainPage: () -> Unit) {
             .fillMaxSize(),
         verticalArrangement = Arrangement.Center
     ) {
+        val maxChar = 10
+        val focusManager = LocalFocusManager.current
         Text(
             text = stringResource(R.string.login_welcome),
             modifier = Modifier
@@ -96,7 +103,10 @@ fun SignUp(loginViewModel: LoginViewModel, mainPage: () -> Unit) {
             )
             OutlinedTextField(
                 value = firstName,
-                onValueChange = {firstName = it},
+                onValueChange = {
+                    firstName = it.take(maxChar)
+                    if(it.length>maxChar) focusManager.moveFocus(FocusDirection.Down)
+                },
                 label = { Text(text = stringResource(R.string.login_enter_first_name))},
                 enabled = true,
                 singleLine = true,
@@ -114,7 +124,10 @@ fun SignUp(loginViewModel: LoginViewModel, mainPage: () -> Unit) {
             )
             OutlinedTextField(
                 value = lastName,
-                onValueChange = {lastName = it},
+                onValueChange = {
+                    lastName = it.take(maxChar)
+                    if(it.length>maxChar) focusManager.moveFocus(FocusDirection.Down)
+                },
                 label = { Text(text = stringResource(R.string.login_enter_last_name))},
                 enabled = true,
                 singleLine = true,
@@ -122,7 +135,10 @@ fun SignUp(loginViewModel: LoginViewModel, mainPage: () -> Unit) {
                     .weight(60F)
             )
         }
-        Button(onClick = {
+        Button(
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally),
+            onClick = {
             Log.d(TAG, "SignUp: signing up")
             val user = User(firstName,lastName)
             loginViewModel.getIntent(ViewIntents.SIGN_UP(user))
