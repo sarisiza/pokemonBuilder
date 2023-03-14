@@ -21,7 +21,7 @@ class DatabaseModule {
         Room.databaseBuilder(
             context,
             PokemonDatabase::class.java,
-            "pokemon-db"
+            "pokemonDatabase"
         ).build()
 
     @Provides

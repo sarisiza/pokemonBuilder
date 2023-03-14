@@ -42,6 +42,7 @@ import java.util.*
 @Composable
 fun PokemonDetailsScreen(selectedPokemon: PokemonQuery.Pokemon_v2_pokemon) {
     LazyColumn (
+        state= rememberForeverLazyListState(key = selectedPokemon.name),
         modifier = Modifier
             .padding(10.dp)
     ) {

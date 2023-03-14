@@ -19,7 +19,8 @@
             android:name=".MainActivity"
             android:exported="false"
             android:label="@string/title_activity_main"
-            android:theme="@style/Theme.PokemonBuilder" />
+            android:theme="@style/Theme.PokemonBuilder"
+            android:configChanges="orientation|screenSize"/>
         <activity
             android:name=".LoginActivity"
             android:exported="true"
