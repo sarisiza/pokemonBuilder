@@ -2,6 +2,7 @@ package com.pokemon.pokemonbuilder
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -45,6 +46,8 @@ private const val TAG = "MainActivity"
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    var configurationChanged = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -111,12 +114,23 @@ class MainActivity : ComponentActivity() {
                         navController = navController,
                         dexViewModel = dexViewModel,
                         loginViewModel = loginViewModel,
-                        modifier = Modifier.padding(it)
-                    )
+                        modifier = Modifier.padding(it),
+                        configurationChanged
+                    ){updateConfiguration(false)}
                 }
             }
         }
     }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        updateConfiguration(true)
+    }
+
+    private fun updateConfiguration(state: Boolean){
+        configurationChanged = state
+    }
+
 }
 
 @Composable
@@ -124,8 +138,11 @@ fun PokemonNavGraph(
     navController: NavHostController,
     dexViewModel: DexViewModel,
     loginViewModel: LoginViewModel,
-    modifier: Modifier
+    modifier: Modifier,
+    configuration: Boolean,
+    updateConfig: () -> Unit
 ) {
+    var goingBack = false
     NavHost(
         navController = navController,
         modifier = modifier,
@@ -139,10 +156,18 @@ fun PokemonNavGraph(
                 val language = loginViewModel.appLanguage.value
                 loginViewModel.getIntent(ViewIntents.GET_LANGUAGE)
                 language?.let {
-                    dexViewModel.getIntent(ViewIntents.GET_POKEMON(
-                        it,
-                        dexViewModel.selectedGeneration.generation.id
-                    ))
+                    if(!configuration && !goingBack) {
+                        dexViewModel.getIntent(
+                            ViewIntents.GET_POKEMON(
+                                it,
+                                dexViewModel.selectedGeneration.generation.id
+                            )
+                        )
+                    } else if(configuration){
+                        updateConfig()
+                    } else if (goingBack){
+                        goingBack = false
+                    }
                 }
                 dexViewModel.updateBackTrack(false)
                 PokemonInfo(
@@ -152,6 +177,8 @@ fun PokemonNavGraph(
                 )
             }
             composable("pokemon_details") {
+                updateConfig()
+                goingBack = true
                 dexViewModel.updateBackTrack(true)
                 dexViewModel.selectedPokemon?.let {
                     PokemonDetailsScreen(selectedPokemon = it)

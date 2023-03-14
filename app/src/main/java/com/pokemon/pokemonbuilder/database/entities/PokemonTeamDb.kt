@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 import com.google.gson.Gson
 import com.pokemon.pokemonbuilder.domain.PokemonTeam
 
-@Entity(tableName = "pokemon-team")
+@Entity(tableName = "pokemonTeam")
 data class PokemonTeamDb(
     @PrimaryKey val id: Int,
     val name: String,

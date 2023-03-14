@@ -14,10 +14,10 @@ interface PokemonDAO {
     @Delete
     suspend fun deleteTeam(vararg team: PokemonTeamDb)
 
-    @Query("SELECT * FROM pokemon-team")
+    @Query("SELECT * FROM pokemonTeam")
     suspend fun getPokemonTeams(): List<PokemonTeamDb>
 
-    @Query("SELECT * FROM pokemon-team WHERE id = :id")
+    @Query("SELECT * FROM pokemonTeam WHERE id = :id")
     suspend fun getTeamById(id: Int): PokemonTeamDb
 
     @Update

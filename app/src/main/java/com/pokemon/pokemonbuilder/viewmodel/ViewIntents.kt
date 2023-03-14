@@ -2,14 +2,21 @@ package com.pokemon.pokemonbuilder.viewmodel
 
 import com.pokemon.pokemonbuilder.database.entities.PokemonDb
 import com.pokemon.pokemonbuilder.database.entities.PokemonTeamDb
+import com.pokemon.pokemonbuilder.domain.Pokemon
+import com.pokemon.pokemonbuilder.domain.PokemonTeam
+import com.pokemon.pokemonbuilder.utils.DatabaseAction
 import com.pokemon.pokemonbuilder.utils.LanguageEnum
 import com.pokemon.pokemonbuilder.utils.User
 
 sealed class ViewIntents{
 
-    data class SIGN_UP(val user: User): ViewIntents()
+    data class SIGN_UP(
+        val user: User
+        ): ViewIntents()
 
-    data class PICK_LANGUAGE(val language: LanguageEnum): ViewIntents()
+    data class PICK_LANGUAGE(
+        val language: LanguageEnum
+        ): ViewIntents()
 
     object GET_LANGUAGE: ViewIntents()
 
@@ -19,20 +26,46 @@ sealed class ViewIntents{
 
     object CHECK_FIRST_TIME_USER: ViewIntents()
 
-    data class GET_POKEMON(val language: LanguageEnum, val generation: Int): ViewIntents()
+    data class GET_POKEMON(
+        val language: LanguageEnum,
+        val generation: Int
+        ): ViewIntents()
 
-    data class GET_ITEMS(val language: LanguageEnum): ViewIntents()
+    data class GET_ITEMS(
+        val language: LanguageEnum
+        ): ViewIntents()
 
-    data class SAVE_POKEMON(val pokemon: PokemonDb): ViewIntents()
+    data class GET_NATURES(
+        val language: LanguageEnum
+        ): ViewIntents()
 
-    data class SAVE_TEAM(val team: PokemonTeamDb): ViewIntents()
+    data class GET_TYPES(
+        val language: LanguageEnum
+        ): ViewIntents()
 
-    object ADD_POKEMON: ViewIntents()
+    data class POKEMON_OPERATION(
+        val pokemon: Pokemon,
+        val action: DatabaseAction
+        ): ViewIntents()
 
-    object ADD_TEAM: ViewIntents()
+    data class TEAM_OPERATION(
+        val team: PokemonTeam,
+        val action: DatabaseAction,
+        val name: String? = null
+    ): ViewIntents()
+
+    data class POKEMON_IN_TEAM_OPERATION(
+        val team: PokemonTeam,
+        val pokemon: Pokemon,
+        val action: DatabaseAction
+        ): ViewIntents()
 
     object VIEW_CREATED_POKEMON: ViewIntents()
 
     object VIEW_CREATED_TEAMS: ViewIntents()
+
+    data class GET_POKEMON_IN_TEAM(
+        val team: PokemonTeam
+        ): ViewIntents()
 
 }

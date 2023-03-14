@@ -10,8 +10,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import javax.inject.Inject
 
-class AddPokemonToTeamUseCase(
+class AddPokemonToTeamUseCase @Inject constructor(
     private val localRepository: LocalRepository,
     private val coroutineDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) {
