@@ -40,4 +40,8 @@
     <string name="label_menu">Menu</string>
     <string name="label_hello">Hello</string>
     <string name="label_priority">Priority</string>
+    <string name="alert_title">There is something wrong!</string>
+    <string name="alert_unexpected">Unexpected error</string>
+    <string name="alert_dismiss">Dismiss</string>
+    <string name="alert_retry">Retry</string>
 </resources>
