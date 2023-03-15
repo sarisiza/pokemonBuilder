@@ -44,6 +44,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
 import com.pokemon.pokemonbuilder.ui.theme.PokemonBuilderTheme
 import com.pokemon.pokemonbuilder.ui.views.*
+import com.pokemon.pokemonbuilder.utils.QueryType
 import com.pokemon.pokemonbuilder.viewmodel.BuilderViewModel
 import com.pokemon.pokemonbuilder.viewmodel.DexViewModel
 import com.pokemon.pokemonbuilder.viewmodel.LoginViewModel
@@ -198,6 +199,8 @@ class MainActivity : ComponentActivity() {
             DexScreens.SAVED_POKEMON_DETAILS_PAGE.route -> DexScreens.SAVED_POKEMON_DETAILS_PAGE.resourceId
             DexScreens.CREATE_POKEMON.route -> DexScreens.CREATE_POKEMON.resourceId
             DexScreens.CREATE_POKEMON_PAGE.route -> DexScreens.CREATE_POKEMON_PAGE.resourceId
+            DexScreens.SEARCH_POKEMON.route -> DexScreens.SEARCH_POKEMON.resourceId
+            DexScreens.SEARCH_POKEMON_PAGE.route -> DexScreens.SEARCH_POKEMON_PAGE.resourceId
             else -> R.string.app_name
         }
     }
@@ -234,8 +237,8 @@ fun PokemonNavGraph(
                     if(!configuration) {
                         dexViewModel.getIntent(
                             ViewIntents.GET_POKEMON(
-                                it,
-                                dexViewModel.selectedGeneration.generation.id
+                                language = it,
+                                generation = dexViewModel.selectedGeneration.generation.id
                             )
                         )
                     } else{
@@ -248,7 +251,8 @@ fun PokemonNavGraph(
                     loginViewModel = loginViewModel,
                     navController = navController,
                     headerSize = headerSize,
-                    textSize = textSize
+                    textSize = textSize,
+                    queryType = QueryType.GENERATION
                 )
             }
             composable(DexScreens.POKEMON_DETAILS.route) {
@@ -271,6 +275,7 @@ fun PokemonNavGraph(
         ){
             composable(DexScreens.LANGUAGE_PAGE.route){
                 builderViewModel.shouldCreate.value = false
+                dexViewModel.updateBackTrack(true)
                 LanguagePicker(loginViewModel = loginViewModel) {
                     navController.navigate(DexScreens.POKEDEX.route)
                 }
@@ -283,7 +288,7 @@ fun PokemonNavGraph(
             composable(DexScreens.TEAMS_LIST.route){
                 builderViewModel.shouldCreate.value = true
                 builderViewModel.createTeam.value = true
-                dexViewModel.updateBackTrack(false)
+                dexViewModel.updateBackTrack(true)
                 TeamsInfo(
                     builderViewModel = builderViewModel,
                     navController = navController,
@@ -314,13 +319,14 @@ fun PokemonNavGraph(
             composable(DexScreens.SAVED_POKEMON_PAGE.route){
                 builderViewModel.shouldCreate.value = true
                 builderViewModel.createTeam.value = false
-                dexViewModel.updateBackTrack(false)
+                dexViewModel.updateBackTrack(true)
                 CreatedPokemonList(
                     builderViewModel = builderViewModel,
                     navController = navController,
                     headerSize = headerSize
                 )
             }
+
         }
         navigation(
             startDestination = DexScreens.SAVED_POKEMON_DETAILS_PAGE.route,
@@ -342,6 +348,20 @@ fun PokemonNavGraph(
                 //todo create pokemon
             }
         }
+        navigation(
+            route = DexScreens.SEARCH_POKEMON.route,
+            startDestination = DexScreens.SEARCH_POKEMON_PAGE.route
+        ){
+            composable(DexScreens.SEARCH_POKEMON_PAGE.route){
+                SearchPokemon(
+                    dexViewModel = dexViewModel,
+                    headerSize = headerSize,
+                    textSize = textSize,
+                    loginViewModel = loginViewModel,
+                    navController = navController
+                )
+            }
+        }
     }
 }
 
@@ -354,7 +374,7 @@ fun FabCreator(
         val route = if(builderViewModel.createTeam.value){
              DexScreens.CREATE_TEAM.route
         } else{
-            DexScreens.CREATE_POKEMON.route
+            DexScreens.SEARCH_POKEMON.route
         }
         FloatingActionButton(
             onClick = {navController.navigate(route)},

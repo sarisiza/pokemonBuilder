@@ -11,7 +11,13 @@ interface NetworkRepository {
 
     suspend fun getItems(language: Language, version: Int?): ApolloResponse<ItemsQuery.Data>
 
-    suspend fun getPokemon(language: Language, generation: Int): ApolloResponse<PokemonQuery.Data>
+    suspend fun getPokemon(
+        language: Language,
+        generation: Int?,
+        pokemonName: String?,
+        pokemonId: Int?,
+        pokemonType: String?
+    ): ApolloResponse<PokemonQuery.Data>
 
     suspend fun getTypes(language: Language): ApolloResponse<TypesQuery.Data>
 
@@ -33,9 +39,22 @@ class NetworkRepositoryImpl @Inject constructor(
             .execute()
     }
 
-    override suspend fun getPokemon(language: Language, generation: Int): ApolloResponse<PokemonQuery.Data> {
+    override suspend fun getPokemon(
+        language: Language,
+        generation: Int?,
+        pokemonName: String?,
+        pokemonId: Int?,
+        pokemonType: String?
+    ): ApolloResponse<PokemonQuery.Data> {
         return apolloService
-            .query(PokemonQuery(Optional.present(language.id),Optional.present(generation)))
+            .query(
+                PokemonQuery(
+                    language = Optional.present(language.id),
+                    generation = Optional.presentIfNotNull(generation),
+                    name = Optional.presentIfNotNull(pokemonName),
+                    id= Optional.presentIfNotNull(pokemonId),
+                    type = Optional.presentIfNotNull(pokemonType),
+                ))
             .execute()
     }
 

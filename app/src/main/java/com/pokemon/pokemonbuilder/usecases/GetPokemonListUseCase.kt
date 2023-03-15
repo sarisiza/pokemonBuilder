@@ -19,11 +19,22 @@ class GetPokemonListUseCase @Inject constructor(
 
     operator fun invoke(
         language: LanguageEnum,
-        generation: Int
+        generation: Int?,
+        pokemonName: String?,
+        pokemonId: Int?,
+        pokemonType: String?
     ): Flow<UIState<List<PokemonQuery.Pokemon_v2_pokemon>>> = flow{
         emit(UIState.LOADING)
         serviceCall.serviceCallApi.apolloServiceCall(
-            {networkRepository.getPokemon(language.language,generation)},
+            {
+                networkRepository.getPokemon(
+                    language.language,
+                    generation,
+                    pokemonName,
+                    pokemonId,
+                    pokemonType
+                )
+            },
             {emit(UIState.SUCCESS(it.pokemon_v2_pokemon))},
             {emit(UIState.ERROR(it))}
         )

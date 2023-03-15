@@ -731,7 +731,7 @@ fun EggGroupViewHolder(
 
 @Composable
 fun TypeViewHolder(
-    type: PokemonQuery.Pokemon_v2_type1,
+    type: PokemonQuery.Pokemon_v2_type,
     textSize: TextUnit
 ) {
     val typeImg = LocalContext.current.resIdByName(type.name,"drawable")

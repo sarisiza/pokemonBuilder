@@ -28,7 +28,10 @@ sealed class ViewIntents{
 
     data class GET_POKEMON(
         val language: LanguageEnum,
-        val generation: Int
+        val generation: Int? = null,
+        val pokemonName: String? = null,
+        val pokemonId: Int? = null,
+        val type: String? = null
         ): ViewIntents()
 
     data class GET_ITEMS(

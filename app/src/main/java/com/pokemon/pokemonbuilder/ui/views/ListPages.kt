@@ -39,6 +39,7 @@ import com.pokemon.pokemonbuilder.domain.Pokemon
 import com.pokemon.pokemonbuilder.domain.PokemonTeam
 import com.pokemon.pokemonbuilder.utils.GenerationEnum
 import com.pokemon.pokemonbuilder.utils.POKEMON_IMAGE_URL
+import com.pokemon.pokemonbuilder.utils.QueryType
 import com.pokemon.pokemonbuilder.utils.UIState
 import com.pokemon.pokemonbuilder.viewmodel.BuilderViewModel
 import com.pokemon.pokemonbuilder.viewmodel.DexViewModel
@@ -54,15 +55,43 @@ fun PokemonInfo(
     loginViewModel: LoginViewModel,
     navController: NavController,
     headerSize: TextUnit,
-    textSize: TextUnit
+    textSize: TextUnit,
+    queryType: QueryType
 ) {
     Column {
         val language = loginViewModel.appLanguage.value
         val generation = dexViewModel.selectedGeneration
         loginViewModel.getIntent(ViewIntents.GET_LANGUAGE)
-        PokemonFilter(dexViewModel,headerSize,textSize){gen->
-            language?.let {lang->
-                dexViewModel.getIntent(ViewIntents.GET_POKEMON(lang,gen))
+        language?.let {lang ->
+            when(queryType){
+                QueryType.GENERATION -> {
+                    PokemonFilter(dexViewModel,headerSize,textSize){gen->
+                        dexViewModel.getIntent(
+                            ViewIntents.GET_POKEMON(
+                                language = lang,
+                                generation = gen
+                            )
+                        )
+                    }
+                }
+                QueryType.TYPE -> {
+                    dexViewModel.getIntent(
+                        ViewIntents.GET_POKEMON(
+                            language = lang,
+                            type = dexViewModel.selectedType
+                        )
+                    )
+                }
+                is QueryType.NAME -> {
+                    if(queryType.search) {
+                        dexViewModel.getIntent(
+                            ViewIntents.GET_POKEMON(
+                                language = lang,
+                                pokemonName = dexViewModel.searchForName
+                            )
+                        )
+                    }
+                }
             }
         }
         when(val state = dexViewModel.pokemonList.collectAsState(UIState.LOADING).value){

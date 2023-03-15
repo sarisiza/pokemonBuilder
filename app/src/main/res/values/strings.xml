@@ -53,4 +53,6 @@
     <string name="label_team_name">Team Name</string>
     <string name="label_enter_team_name">Enter team name</string>
     <string name="label_save_team">Save team</string>
+    <string name="label_enter_pokemon">Enter a Pokemon name</string>
+    <string name="btn_search">Search</string>
 </resources>
