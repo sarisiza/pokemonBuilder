@@ -21,9 +21,76 @@ sealed class DexScreens(
         R.drawable.ic_pokemon_24
     )
 
+    object POKEMON_LIST: DexScreens(
+        "pokemon_list",
+        R.string.bnb_pokedex
+    )
+
+    object POKEMON_DETAILS: DexScreens(
+        "pokemon_details",
+        R.string.bnb_pokemon_details
+    )
+
     object CHANGE_LANGUAGE: DexScreens(
         "language",
         R.string.icon_pick_language
+    )
+
+    object LANGUAGE_PAGE: DexScreens(
+        "change_language",
+        R.string.icon_pick_language
+    )
+
+    object TEAMS: DexScreens(
+        "teams",
+        R.string.bnb_teams,
+        R.drawable.ic_teams_24
+    )
+
+    object TEAMS_LIST: DexScreens(
+        "teams_list",
+        R.string.bnb_teams
+    )
+
+    object TEAMS_DETAIL: DexScreens(
+        "teams_detail",
+        R.string.bnb_teams
+    )
+
+    object CREATE_TEAM: DexScreens(
+        "create_team",
+        R.string.bnb_create_team
+    )
+
+    object SAVED_POKEMON: DexScreens(
+        "pokemon",
+        R.string.bnb_pokemon,
+        R.drawable.ic_saved_24
+    )
+
+    object SAVED_POKEMON_PAGE: DexScreens(
+        "saved_pokemon_list",
+        R.string.bnb_pokemon
+    )
+
+    object SAVED_POKEMON_DETAILS: DexScreens(
+        "saved_details",
+        R.string.bnb_pokemon_details
+    )
+
+    object SAVED_POKEMON_DETAILS_PAGE: DexScreens(
+        "saved_pokemon_details",
+        R.string.bnb_pokemon_details
+    )
+
+    object CREATE_POKEMON: DexScreens(
+        "create_pokemon",
+        R.string.bnb_create_pokemon
+    )
+
+    object CREATE_POKEMON_PAGE: DexScreens(
+        "create_pokemon_page",
+        R.string.bnb_create_pokemon
     )
 
 }

@@ -9,8 +9,10 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Settings
@@ -21,10 +23,12 @@ import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -40,6 +44,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
 import com.pokemon.pokemonbuilder.ui.theme.PokemonBuilderTheme
 import com.pokemon.pokemonbuilder.ui.views.*
+import com.pokemon.pokemonbuilder.viewmodel.BuilderViewModel
 import com.pokemon.pokemonbuilder.viewmodel.DexViewModel
 import com.pokemon.pokemonbuilder.viewmodel.LoginViewModel
 import com.pokemon.pokemonbuilder.viewmodel.ViewIntents
@@ -50,17 +55,19 @@ private const val TAG = "MainActivity"
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
     var configurationChanged = false
 
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val windowSizeClass = calculateWindowSizeClass(this)
             PokemonBuilderTheme {
+                val windowSizeClass = calculateWindowSizeClass(this)
                 val navController = rememberNavController()
                 val dexViewModel = hiltViewModel<DexViewModel>()
                 val loginViewModel = hiltViewModel<LoginViewModel>()
+                val builderViewModel = hiltViewModel<BuilderViewModel>()
                 val scaffoldState = rememberScaffoldState()
                 val scope = rememberCoroutineScope()
                 val headerSize =
@@ -70,14 +77,30 @@ class MainActivity : ComponentActivity() {
                         WindowWidthSizeClass.Expanded -> 32.sp
                         else -> 20.sp
                     }
+                val titleSize =
+                    when(windowSizeClass.widthSizeClass){
+                        WindowWidthSizeClass.Compact -> 22.sp
+                        WindowWidthSizeClass.Medium -> 24.sp
+                        WindowWidthSizeClass.Expanded -> 26.sp
+                        else -> 20.sp
+                    }
+                val textSize =
+                    when(windowSizeClass.widthSizeClass){
+                        WindowWidthSizeClass.Compact -> 16.sp
+                        WindowWidthSizeClass.Medium -> 18.sp
+                        WindowWidthSizeClass.Expanded -> 20.sp
+                        else -> 14.sp
+                    }
                 Scaffold(
                     scaffoldState = scaffoldState,
                     topBar = {
                         TopAppBar(
                             modifier = Modifier.padding(5.dp),
                             title = {
+                                val navBackStackEntry by navController.currentBackStackEntryAsState()
+                                val currentRoute = navBackStackEntry?.destination?.route
                                 Text(
-                                    text = "Pokemon Builder",
+                                    text = stringResource(id = getScreenName(currentRoute)),
                                     fontSize = headerSize
                                 )
                             },
@@ -124,14 +147,24 @@ class MainActivity : ComponentActivity() {
                                 scaffoldState.drawerState.close()
                             }
                         }
+                    },
+                    floatingActionButtonPosition = FabPosition.End,
+                    floatingActionButton = {
+                        FabCreator(
+                            builderViewModel = builderViewModel,
+                            navController = navController
+                        )
                     }
                 ) {
                     PokemonNavGraph(
                         navController = navController,
                         dexViewModel = dexViewModel,
                         loginViewModel = loginViewModel,
+                        builderViewModel = builderViewModel,
                         modifier = Modifier.padding(it),
-                        windowSizeClass = windowSizeClass,
+                        headerSize = headerSize,
+                        titleSize = titleSize,
+                        textSize = textSize,
                         configuration = configurationChanged
                     ){updateConfiguration(false)}
                 }
@@ -148,6 +181,27 @@ class MainActivity : ComponentActivity() {
         configurationChanged = state
     }
 
+    private fun getScreenName(route: String?): Int {
+        return when (route) {
+            DexScreens.POKEDEX.route -> DexScreens.POKEDEX.resourceId
+            DexScreens.POKEMON_LIST.route -> DexScreens.POKEMON_LIST.resourceId
+            DexScreens.POKEMON_DETAILS.route -> DexScreens.POKEMON_DETAILS.resourceId
+            DexScreens.CHANGE_LANGUAGE.route -> DexScreens.CHANGE_LANGUAGE.resourceId
+            DexScreens.LANGUAGE_PAGE.route -> DexScreens.LANGUAGE_PAGE.resourceId
+            DexScreens.TEAMS.route -> DexScreens.TEAMS.resourceId
+            DexScreens.TEAMS_LIST.route -> DexScreens.TEAMS_LIST.resourceId
+            DexScreens.TEAMS_DETAIL.route -> DexScreens.TEAMS_DETAIL.resourceId
+            DexScreens.CREATE_TEAM.route -> DexScreens.CREATE_TEAM.resourceId
+            DexScreens.SAVED_POKEMON.route -> DexScreens.SAVED_POKEMON.resourceId
+            DexScreens.SAVED_POKEMON_PAGE.route -> DexScreens.SAVED_POKEMON_PAGE.resourceId
+            DexScreens.SAVED_POKEMON_DETAILS.route -> DexScreens.SAVED_POKEMON_DETAILS.resourceId
+            DexScreens.SAVED_POKEMON_DETAILS_PAGE.route -> DexScreens.SAVED_POKEMON_DETAILS_PAGE.resourceId
+            DexScreens.CREATE_POKEMON.route -> DexScreens.CREATE_POKEMON.resourceId
+            DexScreens.CREATE_POKEMON_PAGE.route -> DexScreens.CREATE_POKEMON_PAGE.resourceId
+            else -> R.string.app_name
+        }
+    }
+
 }
 
 @Composable
@@ -155,36 +209,37 @@ fun PokemonNavGraph(
     navController: NavHostController,
     dexViewModel: DexViewModel,
     loginViewModel: LoginViewModel,
+    builderViewModel: BuilderViewModel,
     modifier: Modifier,
-    windowSizeClass: WindowSizeClass,
+    headerSize: TextUnit,
+    titleSize: TextUnit,
+    textSize: TextUnit,
     configuration: Boolean,
     updateConfig: () -> Unit
 ) {
-    var goingBack = false
     NavHost(
         navController = navController,
         modifier = modifier,
         startDestination = DexScreens.POKEDEX.route
     ) {
         navigation(
-            startDestination = "pokemon_list",
+            startDestination = DexScreens.POKEMON_LIST.route,
             route = DexScreens.POKEDEX.route
         ) {
-            composable("pokemon_list") {
+            composable(DexScreens.POKEMON_LIST.route) {
+                builderViewModel.shouldCreate.value = false
                 val language = loginViewModel.appLanguage.value
                 loginViewModel.getIntent(ViewIntents.GET_LANGUAGE)
                 language?.let {
-                    if(!configuration && !goingBack) {
+                    if(!configuration) {
                         dexViewModel.getIntent(
                             ViewIntents.GET_POKEMON(
                                 it,
                                 dexViewModel.selectedGeneration.generation.id
                             )
                         )
-                    } else if(configuration){
+                    } else{
                         updateConfig()
-                    } else if (goingBack){
-                        goingBack = false
                     }
                 }
                 dexViewModel.updateBackTrack(false)
@@ -192,30 +247,123 @@ fun PokemonNavGraph(
                     dexViewModel = dexViewModel,
                     loginViewModel = loginViewModel,
                     navController = navController,
-                    windowSizeClass = windowSizeClass
+                    headerSize = headerSize,
+                    textSize = textSize
                 )
             }
-            composable("pokemon_details") {
+            composable(DexScreens.POKEMON_DETAILS.route) {
+                builderViewModel.shouldCreate.value = false
                 updateConfig()
-                goingBack = true
                 dexViewModel.updateBackTrack(true)
                 dexViewModel.selectedPokemon?.let {
                     PokemonDetailsScreen(
                         selectedPokemon = it,
-                        windowSizeClass = windowSizeClass
+                        headerSize = headerSize,
+                        titleSize = titleSize,
+                        textSize = textSize
                     )
                 }
             }
         }
         navigation(
-            startDestination = "change_language",
+            startDestination = DexScreens.LANGUAGE_PAGE.route,
             route = DexScreens.CHANGE_LANGUAGE.route
         ){
-            composable("change_language"){
+            composable(DexScreens.LANGUAGE_PAGE.route){
+                builderViewModel.shouldCreate.value = false
                 LanguagePicker(loginViewModel = loginViewModel) {
                     navController.navigate(DexScreens.POKEDEX.route)
                 }
             }
+        }
+        navigation(
+            startDestination = DexScreens.TEAMS_LIST.route,
+            route = DexScreens.TEAMS.route
+        ){
+            composable(DexScreens.TEAMS_LIST.route){
+                builderViewModel.shouldCreate.value = true
+                builderViewModel.createTeam.value = true
+                dexViewModel.updateBackTrack(false)
+                TeamsInfo(
+                    builderViewModel = builderViewModel,
+                    navController = navController,
+                    headerSize = headerSize
+                )
+            }
+            composable(DexScreens.TEAMS_DETAIL.route){
+                builderViewModel.shouldCreate.value = true
+                builderViewModel.createTeam.value = true
+                dexViewModel.updateBackTrack(true)
+                CreatedPokemonList(
+                    builderViewModel = builderViewModel,
+                    navController = navController,
+                    headerSize = headerSize,
+                    selectedTeam = builderViewModel.selectedTeam
+                )
+            }
+            composable(DexScreens.CREATE_TEAM.route){
+                builderViewModel.shouldCreate.value = false
+                dexViewModel.updateBackTrack(true)
+                //todo create team
+            }
+        }
+        navigation(
+            startDestination = DexScreens.SAVED_POKEMON_PAGE.route,
+            route = DexScreens.SAVED_POKEMON.route
+        ){
+            composable(DexScreens.SAVED_POKEMON_PAGE.route){
+                builderViewModel.shouldCreate.value = true
+                builderViewModel.createTeam.value = false
+                dexViewModel.updateBackTrack(false)
+                CreatedPokemonList(
+                    builderViewModel = builderViewModel,
+                    navController = navController,
+                    headerSize = headerSize
+                )
+            }
+        }
+        navigation(
+            startDestination = DexScreens.SAVED_POKEMON_DETAILS_PAGE.route,
+            route = DexScreens.SAVED_POKEMON_DETAILS.route
+        ){
+            composable(DexScreens.SAVED_POKEMON_DETAILS_PAGE.route){
+                builderViewModel.shouldCreate.value = false
+                dexViewModel.updateBackTrack(true)
+                //todo pokemon details
+            }
+        }
+        navigation(
+            startDestination = DexScreens.CREATE_POKEMON_PAGE.route,
+            route = DexScreens.CREATE_POKEMON.route
+        ){
+            composable(DexScreens.CREATE_POKEMON_PAGE.route){
+                builderViewModel.shouldCreate.value = false
+                dexViewModel.updateBackTrack(true)
+                //todo create pokemon
+            }
+        }
+    }
+}
+
+@Composable
+fun FabCreator(
+    builderViewModel: BuilderViewModel,
+    navController: NavHostController
+) {
+    if(builderViewModel.shouldCreate.value){
+        val route = if(builderViewModel.createTeam.value){
+             DexScreens.CREATE_TEAM.route
+        } else{
+            DexScreens.CREATE_POKEMON.route
+        }
+        FloatingActionButton(
+            onClick = {navController.navigate(route)},
+            shape = CircleShape,
+            contentColor = Color.White
+        ) {
+            Icon(
+                imageVector = Icons.Filled.Add,
+                contentDescription = null)
         }
     }
 }
@@ -258,6 +406,14 @@ fun DrawerBody(
             screen = DexScreens.POKEDEX
         ) {
             navController.navigate(DexScreens.POKEDEX.route)
+            closeNavDrawer()
+        }
+        DrawerMenuItem(screen = DexScreens.TEAMS) {
+            navController.navigate(DexScreens.TEAMS.route)
+            closeNavDrawer()
+        }
+        DrawerMenuItem(screen = DexScreens.SAVED_POKEMON) {
+            navController.navigate(DexScreens.SAVED_POKEMON.route)
             closeNavDrawer()
         }
     }

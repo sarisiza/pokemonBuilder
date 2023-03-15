@@ -44,4 +44,13 @@
     <string name="alert_unexpected">Unexpected error</string>
     <string name="alert_dismiss">Dismiss</string>
     <string name="alert_retry">Retry</string>
+    <string name="bnb_teams">Saved Teams</string>
+    <string name="bnb_pokemon">Saved Pokemon</string>
+    <string name="bnb_pokemon_details">Pokemon Details</string>
+    <string name="bnb_create_team">Create Team</string>
+    <string name="bnb_create_pokemon">Create Pokemon</string>
+    <string name="label_create_team">Create your team!</string>
+    <string name="label_team_name">Team Name</string>
+    <string name="label_enter_team_name">Enter team name</string>
+    <string name="label_save_team">Save team</string>
 </resources>

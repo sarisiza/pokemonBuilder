@@ -1,6 +1,7 @@
 package com.pokemon.pokemonbuilder.ui.views
 
 import android.util.Log
+import android.view.KeyEvent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -12,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
@@ -35,7 +37,8 @@ fun LanguagePicker(loginViewModel: LoginViewModel, navigate: () -> Unit) {
     var selectedLanguage by remember { mutableStateOf(LanguageEnum.ENG) }
     Column(
         modifier = Modifier
-            .fillMaxSize(),
+            .fillMaxSize()
+            .padding(16.dp),
         verticalArrangement = Arrangement.Center
     ) {
         Text(
@@ -72,7 +75,8 @@ fun SignUp(loginViewModel: LoginViewModel, mainPage: () -> Unit) {
     var lastName by remember { mutableStateOf("") }
     Column(
         modifier = Modifier
-            .fillMaxSize(),
+            .fillMaxSize()
+            .padding(16.dp),
         verticalArrangement = Arrangement.Center
     ) {
         val maxChar = 10
@@ -112,6 +116,13 @@ fun SignUp(loginViewModel: LoginViewModel, mainPage: () -> Unit) {
                 singleLine = true,
                 modifier = Modifier
                     .weight(60F)
+                    .onKeyEvent {
+                        if(it.nativeKeyEvent.keyCode == KeyEvent.KEYCODE_ENTER){
+                            focusManager.moveFocus(FocusDirection.Down)
+                            true
+                        }
+                        false
+                    }
             )
         }
         Row() {
@@ -126,20 +137,26 @@ fun SignUp(loginViewModel: LoginViewModel, mainPage: () -> Unit) {
                 value = lastName,
                 onValueChange = {
                     lastName = it.take(maxChar)
-                    if(it.length>maxChar) focusManager.moveFocus(FocusDirection.Down)
+                    if(it.length>maxChar) focusManager.clearFocus()
                 },
                 label = { Text(text = stringResource(R.string.login_enter_last_name))},
                 enabled = true,
                 singleLine = true,
                 modifier = Modifier
                     .weight(60F)
+                    .onKeyEvent {
+                        if(it.nativeKeyEvent.keyCode == KeyEvent.KEYCODE_ENTER){
+                            focusManager.clearFocus()
+                            true
+                        }
+                        false
+                    }
             )
         }
         Button(
             modifier = Modifier
                 .align(Alignment.CenterHorizontally),
             onClick = {
-            Log.d(TAG, "SignUp: signing up")
             val user = User(firstName,lastName)
             loginViewModel.getIntent(ViewIntents.SIGN_UP(user))
             mainPage.invoke()

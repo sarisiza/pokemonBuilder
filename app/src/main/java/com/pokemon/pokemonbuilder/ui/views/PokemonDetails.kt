@@ -46,29 +46,10 @@ import java.util.*
 @Composable
 fun PokemonDetailsScreen(
     selectedPokemon: PokemonQuery.Pokemon_v2_pokemon,
-    windowSizeClass: WindowSizeClass
+    headerSize: TextUnit,
+    titleSize: TextUnit,
+    textSize: TextUnit
 ) {
-    val headerSize =
-        when(windowSizeClass.widthSizeClass){
-            WindowWidthSizeClass.Compact -> 28.sp
-            WindowWidthSizeClass.Medium -> 30.sp
-            WindowWidthSizeClass.Expanded -> 32.sp
-            else -> 20.sp
-        }
-    val titleSize =
-        when(windowSizeClass.widthSizeClass){
-            WindowWidthSizeClass.Compact -> 22.sp
-            WindowWidthSizeClass.Medium -> 24.sp
-            WindowWidthSizeClass.Expanded -> 26.sp
-            else -> 20.sp
-        }
-    val textSize =
-        when(windowSizeClass.widthSizeClass){
-            WindowWidthSizeClass.Compact -> 16.sp
-            WindowWidthSizeClass.Medium -> 18.sp
-            WindowWidthSizeClass.Expanded -> 20.sp
-            else -> 14.sp
-        }
     LazyColumn (
         state= rememberForeverLazyListState(key = selectedPokemon.name),
         modifier = Modifier

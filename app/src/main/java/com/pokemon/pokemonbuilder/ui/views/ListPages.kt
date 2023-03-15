@@ -26,6 +26,7 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
@@ -34,6 +35,8 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.pokemon.pokemonbuilder.PokemonQuery
 import com.pokemon.pokemonbuilder.R
+import com.pokemon.pokemonbuilder.domain.Pokemon
+import com.pokemon.pokemonbuilder.domain.PokemonTeam
 import com.pokemon.pokemonbuilder.utils.GenerationEnum
 import com.pokemon.pokemonbuilder.utils.POKEMON_IMAGE_URL
 import com.pokemon.pokemonbuilder.utils.UIState
@@ -50,13 +53,14 @@ fun PokemonInfo(
     dexViewModel: DexViewModel,
     loginViewModel: LoginViewModel,
     navController: NavController,
-    windowSizeClass: WindowSizeClass
+    headerSize: TextUnit,
+    textSize: TextUnit
 ) {
     Column {
         val language = loginViewModel.appLanguage.value
         val generation = dexViewModel.selectedGeneration
         loginViewModel.getIntent(ViewIntents.GET_LANGUAGE)
-        PokemonFilter(dexViewModel,windowSizeClass){gen->
+        PokemonFilter(dexViewModel,headerSize,textSize){gen->
             language?.let {lang->
                 dexViewModel.getIntent(ViewIntents.GET_POKEMON(lang,gen))
             }
@@ -79,11 +83,11 @@ fun PokemonInfo(
             is UIState.SUCCESS -> {
                 PokemonList(
                     pokemonItems = state.response,
-                    dexViewModel = dexViewModel,
-                    windowSizeClass = windowSizeClass
+                    key = dexViewModel.selectedGeneration.generation.region,
+                    headerSize = headerSize
                 ){
                     dexViewModel.selectedPokemon = it
-                    navController.navigate("pokemon_details")
+                    navController.navigate(DexScreens.POKEMON_DETAILS.route)
                 }
             }
         }
@@ -94,32 +98,102 @@ fun PokemonInfo(
 fun TeamsInfo(
     builderViewModel: BuilderViewModel,
     navController: NavController,
-    windowSizeClass: WindowSizeClass
+    headerSize: TextUnit
 ) {
+    builderViewModel.getIntent(ViewIntents.VIEW_CREATED_TEAMS)
+    Column {
+        when(val states = builderViewModel.createdTeams.collectAsState().value){
+            is UIState.ERROR -> {
+                ShowErrorDialog(e = states.e) {
+                    builderViewModel.getIntent(ViewIntents.VIEW_CREATED_TEAMS)
+                }
+            }
+            UIState.LOADING -> {
+                CircularProgressIndicator(
+                    modifier = Modifier
+                        .padding(20.dp)
+                        .align(Alignment.CenterHorizontally)
+                )
+            }
+            is UIState.SUCCESS -> {
+                PokemonList(
+                    pokemonItems = states.response,
+                    key = "teams-list",
+                    headerSize = headerSize
+                ){
+                    builderViewModel.selectedTeam = it
+                    navController.navigate(DexScreens.TEAMS_DETAIL.route)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun CreatedPokemonList(
+    builderViewModel: BuilderViewModel,
+    navController: NavController,
+    headerSize: TextUnit,
+    selectedTeam: PokemonTeam? = null
+) {
+    if(selectedTeam == null){
+        builderViewModel.getIntent(ViewIntents.VIEW_CREATED_POKEMON)
+    } else {
+        builderViewModel.getIntent(ViewIntents.GET_POKEMON_IN_TEAM(selectedTeam))
+    }
+    Column {
+        when(val state = builderViewModel.createdPokemon.collectAsState().value){
+            is UIState.ERROR -> {
+                ShowErrorDialog(e = state.e) {
+                    if(selectedTeam == null){
+                        builderViewModel.getIntent(ViewIntents.VIEW_CREATED_POKEMON)
+                    } else {
+                        builderViewModel.getIntent(ViewIntents.GET_POKEMON_IN_TEAM(selectedTeam))
+                    }
+                }
+            }
+            UIState.LOADING -> {
+                CircularProgressIndicator(
+                    modifier = Modifier
+                        .padding(20.dp)
+                        .align(Alignment.CenterHorizontally)
+                )
+            }
+            is UIState.SUCCESS -> {
+                var key: String
+                if(selectedTeam == null){
+                    key = "Created Pokemon"
+                } else {
+                    key = selectedTeam.name
+                }
+                PokemonList(
+                    pokemonItems = state.response,
+                    key = key,
+                    headerSize = headerSize
+                ){
+                    builderViewModel.selectedPokemon = it
+                    navController.navigate(DexScreens.SAVED_POKEMON_DETAILS.route)
+                }
+            }
+        }
+    }
 }
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun <T>PokemonItemView(
     item: T,
-    windowSizeClass: WindowSizeClass,
+    headerSize: TextUnit,
     selectedItem: (T) -> Unit
 ) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(10.dp),
-        onClick = { selectedItem.invoke(item) }
+        onClick = { selectedItem(item) }
     ) {
         when(item){
             is PokemonQuery.Pokemon_v2_pokemon -> {
-                val textSize =
-                    when(windowSizeClass.widthSizeClass){
-                        WindowWidthSizeClass.Compact -> 18.sp
-                        WindowWidthSizeClass.Medium -> 20.sp
-                        WindowWidthSizeClass.Expanded -> 22.sp
-                        else -> 16.sp
-                    }
                 Row {
                     val pokemonImage = POKEMON_IMAGE_URL + item.id + ".png"
                     AsyncImage(
@@ -136,10 +210,22 @@ fun <T>PokemonItemView(
                             ) else it.toString()
                         },
                         fontWeight = FontWeight.Bold,
-                        fontSize = 20.sp,
+                        fontSize = headerSize,
                         modifier = Modifier
                             .padding(10.dp)
                             .align(Alignment.CenterVertically)
+                    )
+                }
+            }
+            is PokemonTeam -> {
+                Column {
+                    Text(
+                        text = item.name,
+                        fontSize = headerSize,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier
+                            .padding(10.dp)
+                            .align(Alignment.CenterHorizontally)
                     )
                 }
             }
@@ -150,18 +236,18 @@ fun <T>PokemonItemView(
 @Composable
 fun <T>PokemonList(
     pokemonItems: List<T>,
-    dexViewModel: DexViewModel,
-    windowSizeClass: WindowSizeClass,
+    key: String,
+    headerSize: TextUnit,
     selectedItem: (T) -> Unit
 ){
     
     LazyColumn(
-        state = rememberForeverLazyListState(key = dexViewModel.selectedGeneration.generation.region)
+        state = rememberForeverLazyListState(key = key)
     ){
         itemsIndexed(items = pokemonItems){_,item ->
             PokemonItemView(
                 item = item,
-                windowSizeClass = windowSizeClass,
+                headerSize = headerSize,
                 selectedItem = selectedItem
             )
         }
@@ -171,32 +257,26 @@ fun <T>PokemonList(
 @Composable
 fun PokemonFilter(
     dexViewModel: DexViewModel,
-    windowSizeClass: WindowSizeClass,
+    headerSize: TextUnit,
+    textSize: TextUnit,
     callPokemon: (Int) -> Unit
 ) {
     Row {
-        val textSize =
-            when(windowSizeClass.widthSizeClass){
-                WindowWidthSizeClass.Compact -> 28.sp
-                WindowWidthSizeClass.Medium -> 30.sp
-                WindowWidthSizeClass.Expanded -> 32.sp
-                else -> 26.sp
-            }
         Text(
             text = stringResource(R.string.label_generation),
-            fontSize = textSize,
+            fontSize = headerSize,
             modifier = Modifier
                 .padding(10.dp)
                 .align(Alignment.CenterVertically)
         )
-        GenerationSpinner(dexViewModel,windowSizeClass,callPokemon)
+        GenerationSpinner(dexViewModel,textSize,callPokemon)
     }
 }
 
 @Composable
 fun GenerationSpinner(
     dexViewModel: DexViewModel,
-    windowSizeClass: WindowSizeClass,
+    textSize: TextUnit,
     callPokemon: (Int) -> Unit
 ){
     var expanded by remember { mutableStateOf(false) }
@@ -208,13 +288,6 @@ fun GenerationSpinner(
         Icons.Filled.KeyboardArrowUp
     else
         Icons.Filled.KeyboardArrowDown
-    val textSize =
-        when(windowSizeClass.widthSizeClass){
-            WindowWidthSizeClass.Compact -> 16.sp
-            WindowWidthSizeClass.Medium -> 18.sp
-            WindowWidthSizeClass.Expanded -> 20.sp
-            else -> 14.sp
-        }
     Column(
         modifier = Modifier.padding(20.dp)
     ) {
