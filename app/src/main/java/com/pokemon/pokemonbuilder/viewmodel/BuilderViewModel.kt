@@ -1,5 +1,7 @@
 package com.pokemon.pokemonbuilder.viewmodel
 
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import com.pokemon.pokemonbuilder.domain.Pokemon
 import com.pokemon.pokemonbuilder.domain.PokemonTeam
 import com.pokemon.pokemonbuilder.usecases.BuilderUseCases
@@ -25,10 +27,11 @@ class BuilderViewModel @Inject constructor(
         MutableStateFlow(UIState.LOADING)
     val createdPokemon: StateFlow<UIState<List<Pokemon>>> get() = _createdPokemon
 
-    private val _pokemonInTeam: MutableStateFlow<UIState<List<Pokemon>>> =
-        MutableStateFlow(UIState.LOADING)
-    val pokemonInTeam: StateFlow<UIState<List<Pokemon>>> get() = _pokemonInTeam
+    var selectedTeam: PokemonTeam? = null
+    var selectedPokemon: Pokemon? = null
 
+    val shouldCreate = mutableStateOf(false)
+    val createTeam = mutableStateOf(true) //false if creating pokemon
 
     fun getIntent(intent: ViewIntents){
         when(intent){
@@ -71,49 +74,59 @@ class BuilderViewModel @Inject constructor(
     }
 
     private fun modifyTeam(team: PokemonTeam, action: DatabaseAction, name: String?) {
-        when(action){
-            DatabaseAction.ADD -> {
-                builderUseCases.createTeam(team)
-            }
-            DatabaseAction.UPDATE -> {
-                name?.let {
-                    builderUseCases.modifyTeamName(team,name)
+        safeViewModelScope.launch {
+            when(action){
+                DatabaseAction.ADD -> {
+                    builderUseCases.createTeam(team)
                 }
-            }
-            DatabaseAction.DELETE -> {
-                builderUseCases.deleteTeam(team)
+                DatabaseAction.UPDATE -> {
+                    name?.let {
+                        builderUseCases.modifyTeamName(team,name)
+                    }
+                }
+                DatabaseAction.DELETE -> {
+                    builderUseCases.deleteTeam(team)
+                }
             }
         }
     }
 
     private fun modifyCreatedPokemon(pokemon: Pokemon, action: DatabaseAction) {
-        when(action){
-            DatabaseAction.ADD -> {
-                builderUseCases.createNewPokemon(pokemon)
-            }
-            DatabaseAction.UPDATE -> {
-                builderUseCases.modifyPokemon(pokemon)
-            }
-            DatabaseAction.DELETE -> {
-                builderUseCases.deletePokemon(pokemon)
+        safeViewModelScope.launch {
+            when(action){
+                DatabaseAction.ADD -> {
+                    builderUseCases.createNewPokemon(pokemon)
+                }
+                DatabaseAction.UPDATE -> {
+                    builderUseCases.modifyPokemon(pokemon)
+                }
+                DatabaseAction.DELETE -> {
+                    builderUseCases.deletePokemon(pokemon)
+                }
             }
         }
     }
 
     private fun modifyPokemonInTeam(team: PokemonTeam, pokemon: Pokemon, action: DatabaseAction) {
-        when(action){
-            DatabaseAction.ADD -> {
-                builderUseCases.addPokemonToTeam(team,pokemon)
-            }
-            DatabaseAction.UPDATE -> {}
-            DatabaseAction.DELETE -> {
-                builderUseCases.removePokemonFromTeam(team,pokemon)
+        safeViewModelScope.launch {
+            when(action){
+                DatabaseAction.ADD -> {
+                    builderUseCases.addPokemonToTeam(team,pokemon)
+                }
+                DatabaseAction.UPDATE -> {}
+                DatabaseAction.DELETE -> {
+                    builderUseCases.removePokemonFromTeam(team,pokemon)
+                }
             }
         }
     }
 
     private fun getPokemonInTeam(team: PokemonTeam) {
-        builderUseCases.getPokemonInTeam(team)
+        safeViewModelScope.launch {
+            builderUseCases.getPokemonInTeam(team).collect{
+                _createdPokemon.value = it
+            }
+        }
     }
 
 
