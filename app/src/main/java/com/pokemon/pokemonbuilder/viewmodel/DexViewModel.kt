@@ -50,11 +50,20 @@ class DexViewModel @Inject constructor(
 
     var selectedPokemon: PokemonQuery.Pokemon_v2_pokemon? = null
     var selectedGeneration: GenerationEnum = GenerationEnum.GEN_IX
+    var selectedType: String? = null
+    var selectedPokemonId: Int? = null
+    var searchForName: String? = null
 
     fun getIntent(intent: ViewIntents){
         when(intent){
             is ViewIntents.GET_POKEMON -> {
-                getPokemonList(intent.language,intent.generation)
+                getPokemonList(
+                    intent.language,
+                    intent.generation,
+                    intent.pokemonName,
+                    intent.pokemonId,
+                    intent.type
+                )
             }
             is ViewIntents.GET_ITEMS -> {
                 getItemsList(intent.language)
@@ -85,9 +94,21 @@ class DexViewModel @Inject constructor(
         }
     }
 
-    private fun getPokemonList(language: LanguageEnum, generation: Int){
+    private fun getPokemonList(
+        language: LanguageEnum,
+        generation: Int?,
+        pokemonName: String?,
+        pokemonId: Int?,
+        type: String?
+    ){
         safeViewModelScope.launch {
-            dexUseCases.getPokemonList(language,generation).collect{
+            dexUseCases.getPokemonList(
+                language,
+                generation,
+                pokemonName,
+                pokemonId,
+                type
+            ).collect{
                 _pokemonList.value = it
             }
         }

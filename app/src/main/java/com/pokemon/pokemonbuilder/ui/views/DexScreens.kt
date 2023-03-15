@@ -93,4 +93,14 @@ sealed class DexScreens(
         R.string.bnb_create_pokemon
     )
 
+    object SEARCH_POKEMON: DexScreens(
+        "search_pokemon",
+        R.string.bnb_create_pokemon
+    )
+
+    object SEARCH_POKEMON_PAGE: DexScreens(
+        "search_pokemon_page",
+        R.string.bnb_create_pokemon
+    )
+
 }
