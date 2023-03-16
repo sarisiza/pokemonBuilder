@@ -1,6 +1,6 @@
 # The Pokemon Builder
 
-##Functionalities
+## Functionalities
 
 ### Pokedex
 The Pokedex will display a list of all the Pokemon, filtered by generations.
