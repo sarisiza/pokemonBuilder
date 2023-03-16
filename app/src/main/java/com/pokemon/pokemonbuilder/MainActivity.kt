@@ -304,7 +304,8 @@ fun PokemonNavGraph(
                 CreatedPokemonList(
                     builderViewModel = builderViewModel,
                     navController = navController,
-                    headerSize = headerSize,
+                    titleSize = titleSize,
+                    textSize = textSize,
                     selectedTeam = builderViewModel.selectedTeam
                 )
             }
@@ -344,7 +345,8 @@ fun PokemonNavGraph(
                 CreatedPokemonList(
                     builderViewModel = builderViewModel,
                     navController = navController,
-                    headerSize = headerSize
+                    titleSize = titleSize,
+                    textSize = textSize
                 )
             }
 
