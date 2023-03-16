@@ -12,7 +12,7 @@ With this applicaition, you will be able to build your championship-winning team
 You can create and edit several teams with diffierent Pokemon.
 You will be able to plan the stats and the moves that your Pokemon will have.
 
-##Libraries and architecture
+## Libraries and architecture
 - PokeApi GraphQl: https://pokeapi.co/docs/graphql
 - Apollo
 - Jetpack Compose
@@ -20,5 +20,5 @@ You will be able to plan the stats and the moves that your Pokemon will have.
 - MVVM/MVI - Clean Architecture
 
 
-##Disclaimer
+## Disclaimer
 All the names and images are property of The Pokemon Company International
