@@ -34,7 +34,7 @@ fun CreateTeamName(
     navController: NavHostController,
     action: DatabaseAction,
 ) {
-    var teamName by remember { mutableStateOf("Team") }
+    var teamName by remember { mutableStateOf(builderViewModel.selectedTeam?.name?:"Team") }
     Column(
         modifier = Modifier
             .fillMaxSize()
