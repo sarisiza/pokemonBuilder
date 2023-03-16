@@ -60,7 +60,6 @@ fun PokemonInfo(
 ) {
     Column {
         val language = loginViewModel.appLanguage.value
-        val generation = dexViewModel.selectedGeneration
         loginViewModel.getIntent(ViewIntents.GET_LANGUAGE)
         language?.let {lang ->
             when(queryType){
@@ -98,16 +97,39 @@ fun PokemonInfo(
             is UIState.ERROR -> {
                 ShowErrorDialog(e = state.e) {
                     language?.let {lang ->
-                        dexViewModel.getIntent(ViewIntents.GET_POKEMON(lang,generation.generation.id))
+                        when(queryType){
+                            QueryType.GENERATION -> {
+                                dexViewModel.getIntent(
+                                    ViewIntents.GET_POKEMON(
+                                        language = lang,
+                                        generation = dexViewModel.selectedGeneration.generation.id
+                                    )
+                                )
+                            }
+                            QueryType.TYPE -> {
+                                dexViewModel.getIntent(
+                                    ViewIntents.GET_POKEMON(
+                                        language = lang,
+                                        type = dexViewModel.selectedType
+                                    )
+                                )
+                            }
+                            is QueryType.NAME -> {
+                                if(queryType.search) {
+                                    dexViewModel.getIntent(
+                                        ViewIntents.GET_POKEMON(
+                                            language = lang,
+                                            pokemonName = dexViewModel.searchForName
+                                        )
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
             }
             UIState.LOADING -> {
-                CircularProgressIndicator(
-                    modifier = Modifier
-                        .padding(20.dp)
-                        .align(Alignment.CenterHorizontally)
-                )
+                LoadingScreen()
             }
             is UIState.SUCCESS -> {
                 PokemonList(
@@ -138,11 +160,7 @@ fun TeamsInfo(
                 }
             }
             UIState.LOADING -> {
-                CircularProgressIndicator(
-                    modifier = Modifier
-                        .padding(20.dp)
-                        .align(Alignment.CenterHorizontally)
-                )
+                LoadingScreen()
             }
             is UIState.SUCCESS -> {
                 PokemonList(

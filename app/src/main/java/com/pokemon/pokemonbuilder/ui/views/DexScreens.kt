@@ -62,6 +62,11 @@ sealed class DexScreens(
         R.string.bnb_create_team
     )
 
+    object EDIT_TEAM: DexScreens(
+        "edit_team",
+        R.string.bnb_edit_team
+    )
+
     object SAVED_POKEMON: DexScreens(
         "pokemon",
         R.string.bnb_pokemon,

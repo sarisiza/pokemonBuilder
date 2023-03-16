@@ -55,4 +55,5 @@
     <string name="label_save_team">Save team</string>
     <string name="label_enter_pokemon">Enter a Pokemon name</string>
     <string name="btn_search">Search</string>
+    <string name="bnb_edit_team">Edit Team</string>
 </resources>
