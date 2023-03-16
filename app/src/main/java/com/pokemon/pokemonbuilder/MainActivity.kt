@@ -44,6 +44,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
 import com.pokemon.pokemonbuilder.ui.theme.PokemonBuilderTheme
 import com.pokemon.pokemonbuilder.ui.views.*
+import com.pokemon.pokemonbuilder.utils.DatabaseAction
 import com.pokemon.pokemonbuilder.utils.QueryType
 import com.pokemon.pokemonbuilder.viewmodel.BuilderViewModel
 import com.pokemon.pokemonbuilder.viewmodel.DexViewModel
@@ -201,6 +202,7 @@ class MainActivity : ComponentActivity() {
             DexScreens.CREATE_POKEMON_PAGE.route -> DexScreens.CREATE_POKEMON_PAGE.resourceId
             DexScreens.SEARCH_POKEMON.route -> DexScreens.SEARCH_POKEMON.resourceId
             DexScreens.SEARCH_POKEMON_PAGE.route -> DexScreens.SEARCH_POKEMON_PAGE.resourceId
+            DexScreens.EDIT_TEAM.route -> DexScreens.EDIT_TEAM.resourceId
             else -> R.string.app_name
         }
     }
@@ -297,7 +299,7 @@ fun PokemonNavGraph(
             }
             composable(DexScreens.TEAMS_DETAIL.route){
                 builderViewModel.shouldCreate.value = true
-                builderViewModel.createTeam.value = true
+                builderViewModel.createTeam.value = false
                 dexViewModel.updateBackTrack(true)
                 CreatedPokemonList(
                     builderViewModel = builderViewModel,
@@ -309,7 +311,26 @@ fun PokemonNavGraph(
             composable(DexScreens.CREATE_TEAM.route){
                 builderViewModel.shouldCreate.value = false
                 dexViewModel.updateBackTrack(true)
-                //todo create team
+                CreateTeamName(
+                    builderViewModel = builderViewModel,
+                    headerSize = headerSize,
+                    titleSize = titleSize,
+                    textSize = textSize,
+                    navController = navController,
+                    action = DatabaseAction.ADD
+                )
+            }
+            composable(DexScreens.EDIT_TEAM.route){
+                builderViewModel.shouldCreate.value = false
+                dexViewModel.updateBackTrack(true)
+                CreateTeamName(
+                    builderViewModel = builderViewModel,
+                    headerSize = headerSize,
+                    titleSize = titleSize,
+                    textSize = textSize,
+                    navController = navController,
+                    action = DatabaseAction.UPDATE
+                )
             }
         }
         navigation(

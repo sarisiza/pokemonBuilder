@@ -1,6 +1,7 @@
 package com.pokemon.pokemonbuilder.viewmodel
 
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import com.pokemon.pokemonbuilder.domain.Pokemon
 import com.pokemon.pokemonbuilder.domain.PokemonTeam
@@ -26,6 +27,10 @@ class BuilderViewModel @Inject constructor(
     private val _createdPokemon: MutableStateFlow<UIState<List<Pokemon>>> =
         MutableStateFlow(UIState.LOADING)
     val createdPokemon: StateFlow<UIState<List<Pokemon>>> get() = _createdPokemon
+
+    private val _databaseOperationDone: MutableState<UIState<Boolean>> =
+        mutableStateOf(UIState.LOADING)
+    val databaseOperationDone: State<UIState<Boolean>> get() = _databaseOperationDone
 
     var selectedTeam: PokemonTeam? = null
     var selectedPokemon: Pokemon? = null
@@ -77,15 +82,21 @@ class BuilderViewModel @Inject constructor(
         safeViewModelScope.launch {
             when(action){
                 DatabaseAction.ADD -> {
-                    builderUseCases.createTeam(team)
+                    builderUseCases.createTeam(team).collect{
+                        _databaseOperationDone.value = it
+                    }
                 }
                 DatabaseAction.UPDATE -> {
                     name?.let {
-                        builderUseCases.modifyTeamName(team,name)
+                        builderUseCases.modifyTeamName(team,name).collect{
+                            _databaseOperationDone.value = it
+                        }
                     }
                 }
                 DatabaseAction.DELETE -> {
-                    builderUseCases.deleteTeam(team)
+                    builderUseCases.deleteTeam(team).collect{
+                        _databaseOperationDone.value = it
+                    }
                 }
             }
         }
@@ -95,13 +106,19 @@ class BuilderViewModel @Inject constructor(
         safeViewModelScope.launch {
             when(action){
                 DatabaseAction.ADD -> {
-                    builderUseCases.createNewPokemon(pokemon)
+                    builderUseCases.createNewPokemon(pokemon).collect{
+                        _databaseOperationDone.value = it
+                    }
                 }
                 DatabaseAction.UPDATE -> {
-                    builderUseCases.modifyPokemon(pokemon)
+                    builderUseCases.modifyPokemon(pokemon).collect{
+                        _databaseOperationDone.value = it
+                    }
                 }
                 DatabaseAction.DELETE -> {
-                    builderUseCases.deletePokemon(pokemon)
+                    builderUseCases.deletePokemon(pokemon).collect{
+                        _databaseOperationDone.value = it
+                    }
                 }
             }
         }
@@ -111,11 +128,15 @@ class BuilderViewModel @Inject constructor(
         safeViewModelScope.launch {
             when(action){
                 DatabaseAction.ADD -> {
-                    builderUseCases.addPokemonToTeam(team,pokemon)
+                    builderUseCases.addPokemonToTeam(team,pokemon).collect{
+                        _databaseOperationDone.value = it
+                    }
                 }
                 DatabaseAction.UPDATE -> {}
                 DatabaseAction.DELETE -> {
-                    builderUseCases.removePokemonFromTeam(team,pokemon)
+                    builderUseCases.removePokemonFromTeam(team,pokemon).collect{
+                        _databaseOperationDone.value = it
+                    }
                 }
             }
         }

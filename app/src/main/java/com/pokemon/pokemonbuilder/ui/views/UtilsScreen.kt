@@ -1,12 +1,18 @@
 package com.pokemon.pokemonbuilder.ui.views
 
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import com.pokemon.pokemonbuilder.R
 
 @Composable
@@ -30,6 +36,17 @@ fun ShowErrorDialog(
                     Text(text = stringResource(R.string.alert_retry))
                 }
             }
+        )
+    }
+}
+
+@Composable
+fun LoadingScreen() {
+    Column {
+        CircularProgressIndicator(
+            modifier = Modifier
+                .padding(20.dp)
+                .align(Alignment.CenterHorizontally)
         )
     }
 }

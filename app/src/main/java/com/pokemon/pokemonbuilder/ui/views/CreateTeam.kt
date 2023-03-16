@@ -1,5 +1,6 @@
 package com.pokemon.pokemonbuilder.ui.views
 
+import android.util.Log
 import android.view.KeyEvent
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
@@ -18,10 +19,12 @@ import androidx.navigation.NavHostController
 import com.pokemon.pokemonbuilder.R
 import com.pokemon.pokemonbuilder.domain.PokemonTeam
 import com.pokemon.pokemonbuilder.utils.DatabaseAction
+import com.pokemon.pokemonbuilder.utils.UIState
 import com.pokemon.pokemonbuilder.viewmodel.BuilderViewModel
 import com.pokemon.pokemonbuilder.viewmodel.ViewIntents
 import java.util.concurrent.TimeUnit
 
+private const val TAG = "CreateTeam"
 @Composable
 fun CreateTeamName(
     builderViewModel: BuilderViewModel,
@@ -82,16 +85,29 @@ fun CreateTeamName(
                 .align(Alignment.CenterHorizontally),
             onClick = {
                 if(action == DatabaseAction.ADD){
+                    Log.d(TAG, "CreateTeamName: Add a team")
                     val team = PokemonTeam(
                         id = TimeUnit.MILLISECONDS.toSeconds(System.nanoTime()).toInt(),
                         name = teamName,
                         pokemon = mutableListOf()
                     )
                     builderViewModel.getIntent(ViewIntents.TEAM_OPERATION(team,action))
-                    //navController.navigate()
+                    builderViewModel.selectedTeam = team
+                    //navController.navigate(DexScreens.SEARCH_POKEMON.route)
+                    when(builderViewModel.databaseOperationDone.value){
+                        is UIState.ERROR -> {}
+                        UIState.LOADING -> {}
+                        is UIState.SUCCESS -> navController.navigate(DexScreens.TEAMS_LIST.route)
+                    }
+                    navController.navigate(DexScreens.TEAMS_LIST.route)
                 } else if(action == DatabaseAction.UPDATE){
                     builderViewModel.selectedTeam?.let {
                         builderViewModel.getIntent(ViewIntents.TEAM_OPERATION(it,action,teamName))
+                    }
+                    when(builderViewModel.databaseOperationDone.value){
+                        is UIState.ERROR -> {}
+                        UIState.LOADING -> {}
+                        is UIState.SUCCESS -> navController.navigate(DexScreens.TEAMS_LIST.route)
                     }
                 }
             }
