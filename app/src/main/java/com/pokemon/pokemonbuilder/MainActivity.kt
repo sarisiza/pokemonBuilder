@@ -203,6 +203,8 @@ class MainActivity : ComponentActivity() {
             DexScreens.SEARCH_POKEMON.route -> DexScreens.SEARCH_POKEMON.resourceId
             DexScreens.SEARCH_POKEMON_PAGE.route -> DexScreens.SEARCH_POKEMON_PAGE.resourceId
             DexScreens.EDIT_TEAM.route -> DexScreens.EDIT_TEAM.resourceId
+            DexScreens.ABOUT.route -> DexScreens.ABOUT.resourceId
+            DexScreens.ABOUT_PAGE.route -> DexScreens.ABOUT_PAGE.resourceId
             else -> R.string.app_name
         }
     }
@@ -386,6 +388,19 @@ fun PokemonNavGraph(
                 )
             }
         }
+        navigation(
+            route = DexScreens.ABOUT.route,
+            startDestination = DexScreens.ABOUT_PAGE.route
+        ){
+            composable(DexScreens.ABOUT_PAGE.route){
+                builderViewModel.shouldCreate.value = false
+                dexViewModel.updateBackTrack(true)
+                AboutUsPage(
+                    headerSize = headerSize,
+                    textSize = textSize
+                )
+            }
+        }
     }
 }
 
@@ -460,6 +475,10 @@ fun DrawerBody(
             navController.navigate(DexScreens.SAVED_POKEMON.route)
             closeNavDrawer()
         }
+        DrawerMenuItem(screen = DexScreens.ABOUT) {
+            navController.navigate(DexScreens.ABOUT.route)
+            closeNavDrawer()
+        }
     }
 }
 
@@ -489,6 +508,10 @@ fun DrawerMenuItem(
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview2() {
+    val headerSize = 28.sp
+    val titleSize = 22.sp
+    val textSize = 16.sp
     PokemonBuilderTheme {
+        AboutUsPage(headerSize = headerSize, textSize = textSize)
     }
 }

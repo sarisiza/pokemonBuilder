@@ -108,4 +108,15 @@ sealed class DexScreens(
         R.string.bnb_create_pokemon
     )
 
+    object ABOUT: DexScreens(
+        "about",
+        R.string.bnb_about,
+        R.drawable.baseline_info_24
+    )
+
+    object ABOUT_PAGE: DexScreens(
+        "about_page",
+        R.string.bnb_about
+    )
+
 }
