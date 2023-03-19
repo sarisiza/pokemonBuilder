@@ -38,8 +38,10 @@ fun TeamsInfo(
                     },
                     swipeLeft = {
                         builderViewModel.getIntent(ViewIntents.TEAM_OPERATION(it,DatabaseAction.DELETE))
+                        navController.navigate(DexScreens.TEAMS.route)
                     }, //delete
                     swipeRight = {
+                        builderViewModel.selectedTeam = it
                         navController.navigate(DexScreens.EDIT_TEAM.route)
                     } //edit
                 )
