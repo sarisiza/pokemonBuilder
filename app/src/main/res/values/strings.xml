@@ -50,6 +50,7 @@
     <string name="bnb_create_team">Create Team</string>
     <string name="bnb_create_pokemon">Create Pokemon</string>
     <string name="label_create_team">Create your team!</string>
+    <string name="label_edit_team">Edit your team!</string>
     <string name="label_team_name">Team Name</string>
     <string name="label_enter_team_name">Enter team name</string>
     <string name="label_save_team">Save team</string>

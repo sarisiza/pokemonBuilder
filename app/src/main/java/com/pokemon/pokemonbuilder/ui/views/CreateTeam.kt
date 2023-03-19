@@ -34,6 +34,7 @@ fun CreateTeamName(
     navController: NavHostController,
     action: DatabaseAction,
 ) {
+    Log.d(TAG, "CreateTeamName: Composing")
     var teamName by remember { mutableStateOf(builderViewModel.selectedTeam?.name?:"Team") }
     Column(
         modifier = Modifier
@@ -41,10 +42,13 @@ fun CreateTeamName(
             .padding(16.dp),
         verticalArrangement = Arrangement.Center
     ) {
-        val maxChar = 20
         val focusManager = LocalFocusManager.current
+        val instruction =
+            if(action == DatabaseAction.ADD)
+                R.string.label_create_team
+            else R.string.label_edit_team
         Text(
-            text = stringResource(R.string.label_create_team),
+            text = stringResource(instruction),
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .padding(10.dp),
@@ -63,8 +67,7 @@ fun CreateTeamName(
             OutlinedTextField(
                 value = teamName,
                 onValueChange = {
-                    teamName = it.take(maxChar)
-                    if(it.length>maxChar) focusManager.clearFocus()
+                    teamName = it
                 },
                 label = { Text(text = stringResource(R.string.label_enter_team_name))},
                 enabled = true,
@@ -85,7 +88,6 @@ fun CreateTeamName(
                 .align(Alignment.CenterHorizontally),
             onClick = {
                 if(action == DatabaseAction.ADD){
-                    Log.d(TAG, "CreateTeamName: Add a team")
                     val team = PokemonTeam(
                         id = TimeUnit.MILLISECONDS.toSeconds(System.nanoTime()).toInt(),
                         name = teamName,
@@ -99,8 +101,8 @@ fun CreateTeamName(
                         UIState.LOADING -> {}
                         is UIState.SUCCESS -> navController.navigate(DexScreens.TEAMS_LIST.route)
                     }
-                    navController.navigate(DexScreens.TEAMS_LIST.route)
-                } else if(action == DatabaseAction.UPDATE){
+                }
+                if(action == DatabaseAction.UPDATE){
                     builderViewModel.selectedTeam?.let {
                         builderViewModel.getIntent(ViewIntents.TEAM_OPERATION(it,action,teamName))
                     }

@@ -290,7 +290,7 @@ fun PokemonNavGraph(
             composable(DexScreens.TEAMS_LIST.route){
                 builderViewModel.shouldCreate.value = true
                 builderViewModel.createTeam.value = true
-                dexViewModel.updateBackTrack(true)
+                dexViewModel.updateBackTrack(false)
                 TeamsInfo(
                     builderViewModel = builderViewModel,
                     navController = navController,
@@ -310,6 +310,7 @@ fun PokemonNavGraph(
                 )
             }
             composable(DexScreens.CREATE_TEAM.route){
+                builderViewModel.selectedTeam = null
                 builderViewModel.shouldCreate.value = false
                 dexViewModel.updateBackTrack(true)
                 CreateTeamName(

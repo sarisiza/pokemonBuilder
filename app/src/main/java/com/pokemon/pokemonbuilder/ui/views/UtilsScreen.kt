@@ -28,6 +28,7 @@ import com.pokemon.pokemonbuilder.R
 import com.pokemon.pokemonbuilder.domain.Pokemon
 import com.pokemon.pokemonbuilder.domain.PokemonTeam
 import com.pokemon.pokemonbuilder.utils.POKEMON_IMAGE_URL
+import kotlinx.coroutines.CoroutineScope
 import java.util.*
 
 @Composable
@@ -89,19 +90,24 @@ fun <T>PokemonList(
             val dismissState = rememberDismissState()
             if(dismissState.isDismissed(DismissDirection.EndToStart)){
                 swipeLeft?.invoke(item)
-                items.remove(item)
             }
             if(dismissState.isDismissed(DismissDirection.StartToEnd)){
                 swipeRight?.invoke(item)
+            }
+            if(dismissState.currentValue != DismissValue.Default){
+                LaunchedEffect(Unit){
+                    dismissState.reset()
+                }
             }
             SwipeToDismiss(
                 state = dismissState,
                 background = {
                     val color by animateColorAsState(
-                        targetValue = when(dismissState.targetValue){
-                            DismissValue.Default -> Color.Transparent
+                        targetValue = when(dismissState.targetValue) {
+                            DismissValue.Default ->  Color.Transparent
                             DismissValue.DismissedToEnd -> Color.Blue
-                            DismissValue.DismissedToStart -> Color.Red
+                            DismissValue.DismissedToStart  -> Color.Red
+
                         }
                     )
                     val alignment = if(dismissState.dismissDirection == DismissDirection.EndToStart)
