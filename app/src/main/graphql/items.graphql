@@ -3,16 +3,15 @@ query Items($language: Int, $version: Int = 20) {
         id
         name
         pokemon_v2_itemcategory {
-            id
-            pokemon_v2_itemcategorynames(where: {language_id: {_eq: $language}}) {
-                name
-            }
             pokemon_v2_itempocket {
                 id
             }
         }
         pokemon_v2_itemflavortexts(where: {_and: {language_id: {_eq: $language}, pokemon_v2_versiongroup: {id: {_gte: $version}}}}) {
             flavor_text
+        }
+        pokemon_v2_itemnames(where: {language_id: {_eq: $language}}) {
+            name
         }
     }
 }

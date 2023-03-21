@@ -10,7 +10,8 @@ import com.pokemon.pokemonbuilder.database.entities.PokemonTeamDb
         PokemonDb::class,
         PokemonTeamDb::class
     ],
-    version = 1
+    version = 1,
+    exportSchema = false
 )
 abstract class PokemonDatabase: RoomDatabase() {
 

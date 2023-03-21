@@ -18,7 +18,9 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
@@ -33,8 +35,15 @@ import com.pokemon.pokemonbuilder.viewmodel.ViewIntents
 private const val TAG = "FirstLogin"
 
 @Composable
-fun LanguagePicker(loginViewModel: LoginViewModel, navigate: () -> Unit) {
+fun LanguagePicker(
+    loginViewModel: LoginViewModel,
+    headerSize: TextUnit,
+    titleSize: TextUnit,
+    textSize: TextUnit,
+    navigate: () -> Unit
+) {
     var selectedLanguage by remember { mutableStateOf(LanguageEnum.ENG) }
+    loginViewModel.getIntent(ViewIntents.GET_LANGUAGE)
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -46,7 +55,7 @@ fun LanguagePicker(loginViewModel: LoginViewModel, navigate: () -> Unit) {
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .padding(10.dp),
-            fontSize = 30.sp,
+            fontSize = headerSize,
             fontWeight = FontWeight.Bold
         )
         Text(
@@ -54,23 +63,37 @@ fun LanguagePicker(loginViewModel: LoginViewModel, navigate: () -> Unit) {
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .padding(10.dp),
-            fontSize = 20.sp
+            fontSize = titleSize
         )
-        selectedLanguage = languageSpinner()
+        PokemonSpinner(
+            itemSet = LanguageEnum.values().toList(),
+            textSize = textSize,
+            selected = loginViewModel.appLanguage
+        ){
+            selectedLanguage = it as LanguageEnum
+        }
         Button(
             modifier = Modifier
                 .align(Alignment.CenterHorizontally),
             onClick = {
-            loginViewModel.getIntent(ViewIntents.PICK_LANGUAGE(selectedLanguage))
-            navigate()
-        }) {
+                Log.d(TAG, "LanguagePicker: $selectedLanguage")
+                loginViewModel.getIntent(ViewIntents.PICK_LANGUAGE(selectedLanguage))
+                navigate()
+            }
+        ) {
             Text(text = stringResource(R.string.button_accept))
         }
     }
 }
 
 @Composable
-fun SignUp(loginViewModel: LoginViewModel, mainPage: () -> Unit) {
+fun SignUp(
+    loginViewModel: LoginViewModel,
+    headerSize: TextUnit,
+    titleSize: TextUnit,
+    textSize: TextUnit,
+    mainPage: () -> Unit
+) {
     var firstName by remember { mutableStateOf("") }
     var lastName by remember { mutableStateOf("") }
     Column(
@@ -86,7 +109,7 @@ fun SignUp(loginViewModel: LoginViewModel, mainPage: () -> Unit) {
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .padding(10.dp),
-            fontSize = 30.sp,
+            fontSize = headerSize,
             fontWeight = FontWeight.Bold
         )
         Text(
@@ -94,7 +117,7 @@ fun SignUp(loginViewModel: LoginViewModel, mainPage: () -> Unit) {
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .padding(10.dp),
-            fontSize = 20.sp
+            fontSize = titleSize
         )
         Spacer(modifier = Modifier.size(20.dp))
         Row() {
@@ -114,10 +137,13 @@ fun SignUp(loginViewModel: LoginViewModel, mainPage: () -> Unit) {
                 label = { Text(text = stringResource(R.string.login_enter_first_name))},
                 enabled = true,
                 singleLine = true,
+                textStyle = TextStyle(
+                    fontSize = textSize
+                ),
                 modifier = Modifier
                     .weight(60F)
                     .onKeyEvent {
-                        if(it.nativeKeyEvent.keyCode == KeyEvent.KEYCODE_ENTER){
+                        if (it.nativeKeyEvent.keyCode == KeyEvent.KEYCODE_ENTER) {
                             focusManager.moveFocus(FocusDirection.Down)
                             true
                         }
@@ -145,7 +171,7 @@ fun SignUp(loginViewModel: LoginViewModel, mainPage: () -> Unit) {
                 modifier = Modifier
                     .weight(60F)
                     .onKeyEvent {
-                        if(it.nativeKeyEvent.keyCode == KeyEvent.KEYCODE_ENTER){
+                        if (it.nativeKeyEvent.keyCode == KeyEvent.KEYCODE_ENTER) {
                             focusManager.clearFocus()
                             true
                         }
@@ -164,57 +190,4 @@ fun SignUp(loginViewModel: LoginViewModel, mainPage: () -> Unit) {
             Text(text = stringResource(R.string.button_sign_up))
         }
     }
-}
-
-@Composable
-fun languageSpinner(): LanguageEnum {
-
-    var expanded by remember { mutableStateOf(false) }
-    val languages = LanguageEnum.values()
-    var selectedLanguage by remember { mutableStateOf(LanguageEnum.ENG) }
-    var selectedLanguageName by remember { mutableStateOf(selectedLanguage.language.name) }
-    var textFieldSize by remember { mutableStateOf(Size.Zero) }
-    val icon = if(expanded)
-        Icons.Filled.KeyboardArrowUp
-    else
-        Icons.Filled.KeyboardArrowDown
-    Column(
-        modifier = Modifier.padding(20.dp)
-    ) {
-        OutlinedTextField(
-            value = selectedLanguageName,
-            onValueChange = {selectedLanguageName = it},
-            enabled = false,
-            modifier = Modifier
-                .fillMaxWidth()
-                .onGloballyPositioned { coordinates ->
-                    textFieldSize = coordinates.size.toSize()
-                },
-            label = {Text(stringResource(R.string.login_label_language))},
-            trailingIcon = {
-                Icon(
-                    icon,
-                    stringResource(R.string.icon_pick_language),
-                    Modifier.clickable { expanded = !expanded }
-                )
-            }
-        )
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false },
-            modifier = Modifier
-                .width(with(LocalDensity.current){textFieldSize.width.toDp()})
-        ) {
-            languages.forEach {language ->
-                DropdownMenuItem(onClick = {
-                    selectedLanguage = language
-                    selectedLanguageName = language.language.name
-                    expanded = false
-                }) {
-                    Text(text = language.language.name)
-                }
-            }
-        }
-    }
-    return selectedLanguage
 }

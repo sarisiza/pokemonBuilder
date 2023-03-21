@@ -1,23 +1,15 @@
 package com.pokemon.pokemonbuilder.ui.views
 
-import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
 import androidx.compose.material.Text
-import androidx.compose.material3.windowsizeclass.WindowSizeClass
-import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,16 +23,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.pokemon.pokemonbuilder.PokemonQuery
 import com.pokemon.pokemonbuilder.R
 import com.pokemon.pokemonbuilder.utils.MoveSpecs
 import com.pokemon.pokemonbuilder.utils.POKEMON_IMAGE_URL
-import com.pokemon.pokemonbuilder.utils.TYPE_IMAGE_URL
+import com.pokemon.pokemonbuilder.utils.replaceFirstCap
 import com.pokemon.pokemonbuilder.utils.resIdByName
-import org.w3c.dom.Text
 import java.util.*
 
 @Composable
@@ -187,11 +177,7 @@ fun PokemonNameCard(
             modifier = Modifier.weight(0.4F)
         )
         Text(
-            text = selectedPokemon.name.replaceFirstChar {
-                if (it.isLowerCase()) it.titlecase(
-                    Locale.getDefault()
-                ) else it.toString()
-            },
+            text = selectedPokemon.name.replaceFirstCap(),
             fontWeight = FontWeight.Bold,
             fontSize = textSize,
             modifier = Modifier

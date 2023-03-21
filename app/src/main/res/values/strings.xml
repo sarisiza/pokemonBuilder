@@ -13,7 +13,7 @@
     <string name="button_sign_up">Sign Up</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="label_generation">Generation</string>
-    <string name="label_pick_generation">Pick generation</string>
+    <string name="label_pick_icon">Pick</string>
     <string name="bnb_pokedex">Pokedex</string>
     <string name="bnb_itemdex">Items</string>
     <string name="bnb_movedex">Moves</string>
@@ -59,4 +59,5 @@
     <string name="bnb_edit_team">Edit Team</string>
     <string name="bnb_about">About Us</string>
     <string name="label_disclaimer">Disclaimer</string>
+    <string name="label_nickname">Nickname</string>
 </resources>
