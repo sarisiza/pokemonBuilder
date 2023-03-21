@@ -280,7 +280,12 @@ fun PokemonNavGraph(
             composable(DexScreens.LANGUAGE_PAGE.route){
                 builderViewModel.shouldCreate.value = false
                 dexViewModel.updateBackTrack(true)
-                LanguagePicker(loginViewModel = loginViewModel) {
+                LanguagePicker(
+                    loginViewModel = loginViewModel,
+                    headerSize = headerSize,
+                    titleSize = titleSize,
+                    textSize = textSize
+                ) {
                     navController.navigate(DexScreens.POKEDEX.route)
                 }
             }

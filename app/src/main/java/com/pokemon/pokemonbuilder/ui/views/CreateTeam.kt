@@ -20,6 +20,7 @@ import com.pokemon.pokemonbuilder.R
 import com.pokemon.pokemonbuilder.domain.PokemonTeam
 import com.pokemon.pokemonbuilder.utils.DatabaseAction
 import com.pokemon.pokemonbuilder.utils.UIState
+import com.pokemon.pokemonbuilder.utils.createRandomId
 import com.pokemon.pokemonbuilder.viewmodel.BuilderViewModel
 import com.pokemon.pokemonbuilder.viewmodel.ViewIntents
 import java.util.concurrent.TimeUnit
@@ -89,7 +90,7 @@ fun CreateTeamName(
             onClick = {
                 if(action == DatabaseAction.ADD){
                     val team = PokemonTeam(
-                        id = TimeUnit.MILLISECONDS.toSeconds(System.nanoTime()).toInt(),
+                        id = createRandomId(),
                         name = teamName,
                         pokemon = mutableListOf()
                     )

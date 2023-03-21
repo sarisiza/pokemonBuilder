@@ -19,11 +19,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import androidx.navigation.NavController
 import com.pokemon.pokemonbuilder.R
-import com.pokemon.pokemonbuilder.domain.PokemonTeam
 import com.pokemon.pokemonbuilder.utils.GenerationEnum
 import com.pokemon.pokemonbuilder.utils.QueryType
 import com.pokemon.pokemonbuilder.utils.UIState
-import com.pokemon.pokemonbuilder.viewmodel.BuilderViewModel
 import com.pokemon.pokemonbuilder.viewmodel.DexViewModel
 import com.pokemon.pokemonbuilder.viewmodel.LoginViewModel
 import com.pokemon.pokemonbuilder.viewmodel.ViewIntents
@@ -49,7 +47,7 @@ fun PokemonInfo(
                         dexViewModel.getIntent(
                             ViewIntents.GET_POKEMON(
                                 language = lang,
-                                generation = gen
+                                generation = gen.generation.id
                             )
                         )
                     }
@@ -132,7 +130,7 @@ fun PokemonFilter(
     dexViewModel: DexViewModel,
     headerSize: TextUnit,
     textSize: TextUnit,
-    callPokemon: (Int) -> Unit
+    callPokemon: (GenerationEnum) -> Unit
 ) {
     Row {
         Text(
@@ -142,66 +140,11 @@ fun PokemonFilter(
                 .padding(10.dp)
                 .align(Alignment.CenterVertically)
         )
-        GenerationSpinner(dexViewModel,textSize,callPokemon)
-    }
-}
-
-@Composable
-fun GenerationSpinner(
-    dexViewModel: DexViewModel,
-    textSize: TextUnit,
-    callPokemon: (Int) -> Unit
-){
-    var expanded by remember { mutableStateOf(false) }
-    val generations = GenerationEnum.values()
-    var selectedGeneration by remember { mutableStateOf(dexViewModel.selectedGeneration) }
-    var selectedGenerationText by remember { mutableStateOf(selectedGeneration.generation.region) }
-    var textFieldSize by remember { mutableStateOf(Size.Zero) }
-    val icon = if(expanded)
-        Icons.Filled.KeyboardArrowUp
-    else
-        Icons.Filled.KeyboardArrowDown
-    Column(
-        modifier = Modifier.padding(20.dp)
-    ) {
-        OutlinedTextField(
-            value = selectedGenerationText,
-            enabled = false,
-            onValueChange = {selectedGenerationText = it},
-            modifier = Modifier
-                .fillMaxWidth()
-                .onGloballyPositioned { coordinates ->
-                    textFieldSize = coordinates.size.toSize()
-                },
-            label = {Text(stringResource(R.string.label_generation))},
-            trailingIcon = {
-                Icon(
-                    icon,
-                    stringResource(R.string.label_pick_generation),
-                    Modifier.clickable { expanded = !expanded }
-                )
-            },
-            textStyle = TextStyle(
-                fontSize = textSize
-            )
+        PokemonSpinner(
+            itemSet = GenerationEnum.values().toList(),
+            textSize = textSize,
+            selected = dexViewModel.selectedGeneration,
+            getItem = callPokemon
         )
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false },
-            modifier = Modifier
-                .width(with(LocalDensity.current){textFieldSize.width.toDp()})
-        ) {
-            generations.forEach {generation ->
-                DropdownMenuItem(onClick = {
-                    selectedGeneration = generation
-                    selectedGenerationText = generation.generation.region
-                    dexViewModel.selectedGeneration = selectedGeneration
-                    expanded = false
-                    callPokemon.invoke(selectedGeneration.generation.id)
-                }) {
-                    Text(text = generation.generation.region)
-                }
-            }
-        }
     }
 }

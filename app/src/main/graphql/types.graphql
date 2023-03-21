@@ -1,12 +1,19 @@
 query Types($language: Int) {
     pokemon_v2_type {
         id
+        name
         pokemon_v2_typenames(where: {language_id: {_eq: $language}}) {
             name
         }
-        pokemon_v2_typeefficacies {
-            target_type_id
+        pokemonV2TypeefficaciesByTargetTypeId {
             damage_factor
+            pokemon_v2_type {
+                id
+                name
+                pokemon_v2_typenames(where: {language_id: {_eq: $language}}) {
+                    name
+                }
+            }
         }
     }
 }
