@@ -54,10 +54,25 @@
     <string name="label_team_name">Team Name</string>
     <string name="label_enter_team_name">Enter team name</string>
     <string name="label_save_team">Save team</string>
+    <string name="label_save_pokemon">Save Pokemon</string>
     <string name="label_enter_pokemon">Enter a Pokemon name</string>
     <string name="btn_search">Search</string>
     <string name="bnb_edit_team">Edit Team</string>
     <string name="bnb_about">About Us</string>
     <string name="label_disclaimer">Disclaimer</string>
     <string name="label_nickname">Nickname</string>
+    <string name="label_pokeball">Pokeball</string>
+    <string name="label_item">Item</string>
+    <string name="label_nature">Nature</string>
+    <string name="label_gender">Gender</string>
+    <string name="label_stats">Stats</string>
+    <string name="label_stat_name">Stat Name</string>
+    <string name="label_ev">EV</string>
+    <string name="label_iv">IV</string>
+    <string name="label_total">Total</string>
+    <string name="label_remaining">EV remaining </string>
+    <string name="label_level">Level</string>
+    <string name="label_shiny">Shiny</string>
+    <string name="label_tera">Tera Type</string>
+    <string name="label_moves">Moves</string>
 </resources>

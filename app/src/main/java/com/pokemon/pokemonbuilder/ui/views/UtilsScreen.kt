@@ -272,6 +272,8 @@ fun <T>PokemonSpinner(
                 is GenerationEnum -> mutableStateOf(selected.generation.region)
                 is GenderEnum -> mutableStateOf(context.getString(selected.gender))
                 is LanguageEnum -> mutableStateOf(selected.language.name)
+                is PokemonQuery.Pokemon_v2_pokemonmofe -> mutableStateOf(selected.pokemon_v2_move?.pokemon_v2_movenames?.get(0)?.name?:"")
+                is PokemonQuery.Pokemon_v2_pokemonability -> mutableStateOf(selected.pokemon_v2_ability?.pokemon_v2_abilitynames?.get(0)?.name?:"")
                 else -> mutableStateOf("")
             }
         }
@@ -311,6 +313,8 @@ fun <T>PokemonSpinner(
                         is GenerationEnum -> item.generation.region
                         is GenderEnum -> context.getString(item.gender)
                         is LanguageEnum -> item.language.name
+                        is PokemonQuery.Pokemon_v2_pokemonmofe -> item.pokemon_v2_move?.pokemon_v2_movenames?.get(0)?.name?:""
+                        is PokemonQuery.Pokemon_v2_pokemonability -> item.pokemon_v2_ability?.pokemon_v2_abilitynames?.get(0)?.name?:""
                         else -> ""
                     }
                     getItem(item)
@@ -326,11 +330,13 @@ fun <T>PokemonSpinner(
                                 painter = painterResource(id = typeImg),
                                 contentDescription = item.name,
                                 modifier = Modifier
-                                    .weight(0.2F)
-                                    .clip(CircleShape)
                                     .padding(5.dp)
                             )
-                            Text(text = item.pokemon_v2_typenames[0].name)
+                            Text(
+                                text = item.pokemon_v2_typenames[0].name,
+                                modifier = Modifier
+                                    .padding(5.dp)
+                            )
                         }
                         is ItemsQuery.Pokemon_v2_item -> {
                             val itemImg = "$ITEM_IMAGE_URL${item.name}.png"
@@ -340,17 +346,54 @@ fun <T>PokemonSpinner(
                                     .build(),
                                 contentDescription = item.name,
                                 contentScale = ContentScale.None,
+                                modifier = Modifier.padding(5.dp)
                             )
-                            Text(text = item.pokemon_v2_itemnames[0].name)
+                            Text(
+                                text = item.pokemon_v2_itemnames[0].name,
+                                modifier = Modifier
+                                    .padding(5.dp)
+                            )
                         }
                         is GenerationEnum -> {
-                            Text(text = item.generation.region)
+                            Text(
+                                text = item.generation.region,
+                                modifier = Modifier
+                                    .padding(5.dp)
+                            )
                         }
                         is GenderEnum -> {
-                            Text(text = stringResource(id = item.gender))
+                            Text(
+                                text = stringResource(id = item.gender),
+                                modifier = Modifier
+                                    .padding(5.dp)
+                            )
                         }
                         is LanguageEnum -> {
-                            Text(text = item.language.name)
+                            Text(
+                                text = item.language.name,
+                                modifier = Modifier
+                                    .padding(5.dp)
+                            )
+                        }
+                        is PokemonQuery.Pokemon_v2_pokemonmofe -> {
+                            Text(
+                                text = item.pokemon_v2_move?.pokemon_v2_movenames?.get(0)?.name?:"",
+                                modifier = Modifier
+                                    .padding(5.dp)
+                            )
+                        }
+                        is PokemonQuery.Pokemon_v2_pokemonability -> {
+                            Text(
+                                text = item.pokemon_v2_ability?.pokemon_v2_abilitynames?.get(0)?.name?:"",
+                                modifier = Modifier
+                                    .padding(5.dp)
+                            )
+                            Text(
+                                text = if(item.is_hidden)"H" else "",
+                                modifier = Modifier
+                                    .padding(5.dp),
+                                fontWeight = FontWeight.Bold
+                            )
                         }
                         else -> {}
                     }

@@ -376,7 +376,17 @@ fun PokemonNavGraph(
             composable(DexScreens.CREATE_POKEMON_PAGE.route){
                 builderViewModel.shouldCreate.value = false
                 dexViewModel.updateBackTrack(true)
-                //todo create pokemon
+                CreatePokemon(
+                    dexViewModel = dexViewModel,
+                    builderViewModel = builderViewModel,
+                    loginViewModel = loginViewModel,
+                    headerSize = headerSize,
+                    titleSize = titleSize,
+                    textSize = textSize,
+                    action = DatabaseAction.ADD,
+                    inTeam = builderViewModel.selectedTeam!=null,
+                    navController = navController
+                )
             }
         }
         navigation(

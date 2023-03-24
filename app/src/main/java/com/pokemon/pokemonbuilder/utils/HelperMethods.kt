@@ -3,9 +3,12 @@ package com.pokemon.pokemonbuilder.utils
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Resources
+import com.pokemon.pokemonbuilder.NaturesQuery
 import com.pokemon.pokemonbuilder.R
+import com.pokemon.pokemonbuilder.domain.Pokemon
 import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.math.floor
 
 @SuppressLint("DiscouragedApi")
 fun Context.resIdByName(
@@ -33,3 +36,21 @@ fun Int.getGender(): GenderEnum =
     }
 
 fun createRandomId(): Int = TimeUnit.MILLISECONDS.toSeconds(System.nanoTime()).toInt()
+
+fun calculateTotalStats(
+    stat: Int,
+    base: Int,
+    iv: Int,
+    ev: Int,
+    pokemon: Pokemon? = null
+): Int{
+    var total: Double
+    if(stat == 1){
+        total = floor(0.01*(2*base+iv+floor(0.25*ev)*(pokemon?.level?:100))+(pokemon?.level?:100)+10)
+    }else{
+        total = floor(0.01*(2*base+iv+ floor(0.25*ev)*(pokemon?.level?:100))+5)
+        if(pokemon?.nature?.increased_stat_id == stat) total*=1.1
+        if(pokemon?.nature?.decreased_stat_id == stat) total*=0.9
+    }
+    return total.toInt()
+}

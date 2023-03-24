@@ -96,11 +96,11 @@ fun CreateTeamName(
                     )
                     builderViewModel.getIntent(ViewIntents.TEAM_OPERATION(team,action))
                     builderViewModel.selectedTeam = team
-                    //navController.navigate(DexScreens.SEARCH_POKEMON.route)
+                    // navController.navigate(DexScreens.TEAMS_LIST.route)
                     when(builderViewModel.databaseOperationDone.value){
                         is UIState.ERROR -> {}
                         UIState.LOADING -> {}
-                        is UIState.SUCCESS -> navController.navigate(DexScreens.TEAMS_LIST.route)
+                        is UIState.SUCCESS -> navController.navigate(DexScreens.SEARCH_POKEMON.route)
                     }
                 }
                 if(action == DatabaseAction.UPDATE){
